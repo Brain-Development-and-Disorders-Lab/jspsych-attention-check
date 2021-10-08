@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="../node_modules/jspsych/jspsych.js"></script>
+    <script src="../src/jspsych-attention-check.js"></script>
+    <link rel="stylesheet" href="../node_modules/jspsych/css/jspsych.css">
+  </head>
+  <body></body>
+  <script>
+    const timeline = [{
+      type: 'attention-check',
+      question: 'What is the objective of this task?',
+      options: [
+        '(1) To turn as many cards over as I can',
+        '(2) To guess which colour the majority of the cards are',
+        '(3) To decide what my favourite colour is',
+      ],
+      option_correct: 1,
+      options_radio: true,
+      input_timeout: 1500,
+      button_text: 'Submit Answer',
+      feedback_correct: 'Correct! You have to guess which colour ' +
+        'the majority of the cards are.',
+      feedback_incorrect: 'Incorrect. You have to guess which colour ' +
+      'the majority of the cards are.',
+    }];
+
+    jsPsych.init({
+      timeline: timeline,
+      show_progress_bar: true,
+    });
+  </script>
+</html>

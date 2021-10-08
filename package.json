@@ -1,0 +1,22 @@
+{
+  "name": "jspsych-attention-check",
+  "version": "1.0.0",
+  "description": "A jsPsych plugin for adding multiple-choice attention check questions to an experiment timeline.",
+  "source": "src/jspsych-attention-check.js",
+  "main": "dist/jspsych-attention-check.js",
+  "repository": "https://henry-burgess@github.com/henry-burgess/jspsych-attention-check.git",
+  "author": "Henry Burgess <henryjburg@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "watch": "parcel example/index.html",
+    "build": "parcel build"
+  },
+  "dependencies": {
+    "jspsych": "6.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-google": "^0.14.0",
+    "parcel": "^2.0.0-rc.0"
+  }
+}
