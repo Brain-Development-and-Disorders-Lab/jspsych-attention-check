@@ -1,6 +1,6 @@
 {
   "name": "jspsych-attention-check",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "A jsPsych plugin for adding multiple-choice attention check questions to an experiment timeline.",
   "source": "src/jspsych-attention-check.js",
   "main": "dist/jspsych-attention-check.js",
