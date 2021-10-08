@@ -1,12 +1,12 @@
 /**
  * jspsych-attention-check
  *
- * A jsPsych plugin for adding multiple-choice attention check questions to an
- * experiment timeline.
+ * @description A jsPsych plugin for adding multiple-choice attention check
+ * questions to an experiment timeline.
  *
  * This plugin is NOT compatible with jsPsych version 7.0.
  *
- * Henry Burgess <henry.burgess@wustl.edu>
+ * @author Henry Burgess <henry.burgess@wustl.edu>
  *
  */
 
@@ -124,6 +124,7 @@ jsPsych.plugins['attention-check'] = (function() {
 
     const inputTimeoutDuration = trial.input_timeout;
 
+    // Initialise the trial data
     const trialData = {
       selected_response: -1,
       correct: false,
