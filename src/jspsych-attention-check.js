@@ -135,7 +135,8 @@ jsPsych.plugins['attention-check'] = (function() {
     html += '<style>';
     html +=
       '.jspsych-attention-check-options { ' +
-        'display: inline-block; padding: 6px 12px; margin: 10%; ' +
+        'display: inline-block; padding: 6px 12px; ' +
+        'margin-top: 10%; margin-bottom: 10%;' +
         'font-size: large; font-weight: 400; ' +
         'font-family: "Open Sans", "Arial", sans-serif; ' +
         'cursor: pointer; line-height: 1.4; text-align: left; ' +
