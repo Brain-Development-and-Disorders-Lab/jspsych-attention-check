@@ -148,6 +148,11 @@ jsPsych.plugins['attention-check'] = (function() {
       '.attention-check-text {' +
         'font-size: xx-large; font-weight: bold;' +
       '}' +
+      '.attention-check-button {' +
+        'display: flex;' +
+        'flex-direction: row;' +
+        'justify-content: center;' +
+      '}' +
       '.jspsych-btn {' +
         'font-size: large;' +
       '}' +
@@ -209,7 +214,7 @@ jsPsych.plugins['attention-check'] = (function() {
 
 
     // Submit mechanism
-    html += '<div id="attention-check-button">';
+    html += '<div class="attention-check-button">';
 
     if (optionKeysEnabled && buttonKeyEnabled) {
       // Add the keyboard glyph if using the option keys
@@ -217,7 +222,7 @@ jsPsych.plugins['attention-check'] = (function() {
       'class="kbc-button">';
       html += `${trial.button_key}`;
       html += '</button>';
-      html += `<p>${trial.button_text}</p>`;
+      html += `&nbsp;<p>${trial.button_text}</p>`;
     } else {
       // Add button if not using option keys
       html += '<button type="button" id="attention-check-selection-button" ' +
@@ -273,6 +278,8 @@ jsPsych.plugins['attention-check'] = (function() {
 
         // Button glyphs
         document.getElementById(`btn-R${i}`).classList.add('disabled');
+        document.getElementById(`attention-check-selection-button`)
+            .classList.add('disabled');
       }
     } else {
       // Drop-down
@@ -287,15 +294,6 @@ jsPsych.plugins['attention-check'] = (function() {
       mainTimeout = setTimeout(() => {
         // Mark the response as incorrect before waiting 5 seconds
         displayFeedback(false, trial.feedback_incorrect, 'red');
-
-        // Disable the form options
-        if (trial.options_radio === false) {
-          document.getElementById('attention-check-options').disabled = true;
-        } else {
-          for (let i = 0; i < trial.options.length; i++) {
-            document.getElementById(`R${i}`).disabled = true;
-          }
-        }
 
         // Store response as incorrect
         trialData.correct = false;
@@ -314,7 +312,8 @@ jsPsych.plugins['attention-check'] = (function() {
 
             // Change the appearance of the keyboard glyphs
             document.getElementById(`btn-R${i}`).classList.remove('disabled');
-            document.getElementById(`btn-R${i}`).classList.add('enabled');
+            document.getElementById(`attention-check-selection-button`)
+                .classList.remove('disabled');
           }
         } else {
           document.getElementById('attention-check-options').disabled = false;
@@ -393,6 +392,7 @@ jsPsych.plugins['attention-check'] = (function() {
             optionIndex = i;
           }
           document.getElementById(`R${i}`).disabled = true;
+          document.getElementById(`btn-R${i}`).classList.add('disabled');
         }
       }
 
@@ -416,21 +416,44 @@ jsPsych.plugins['attention-check'] = (function() {
      * @param {string} _fontColour colour of feedback text
      */
     function displayFeedback(_correct, _text, _fontColour='black') {
-      // Insert feedback
-      const feedbackContainer = document.getElementById('attention-feedback');
+      // Get the parent container & height
+      const formParentContainer =
+          document.getElementById('attention-check-options-container');
+      const formParentContainerHeight = formParentContainer.clientHeight;
+      console.debug(`Parent container height:`, formParentContainerHeight);
+
+      // Get the form
+      const formChild = document.getElementById('attention-check-options');
+
+      // Remove the form from the parent
+      formParentContainer.removeChild(formChild);
+
+      // Create a feedback child
       const feedbackParagraph = document.createElement('h3');
       feedbackParagraph.textContent = _text;
       feedbackParagraph.style.color = _fontColour;
-      feedbackContainer.style.marginBottom = '10%';
-      feedbackContainer.appendChild(feedbackParagraph);
+
+      // Update the styling of the parent container
+      formParentContainer.style.display = 'flex';
+      formParentContainer.style.flexDirection = 'row';
+      formParentContainer.style.justifyContent = 'center';
+      formParentContainer.style.alignItems = 'center';
+
+      // Add the feedback to the parent container
+      formParentContainer.appendChild(feedbackParagraph);
+
+      // Set the height of the container
+      formParentContainer.style.minHeight = `${formParentContainerHeight}px`;
 
       // Clear previous event listener
       document.getElementById('attention-check-selection-button')
           .removeEventListener('click', selectionHandler);
 
+      if (!(optionKeysEnabled && buttonKeyEnabled)) {
       // Update button text
-      document.getElementById('attention-check-selection-button')
-          .innerText = 'Continue';
+        document.getElementById('attention-check-selection-button')
+            .innerText = 'Continue';
+      }
 
       // Update binding to continue trials
       document.getElementById('attention-check-selection-button')
