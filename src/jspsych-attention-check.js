@@ -161,6 +161,10 @@ jsPsych.plugins['attention-check'] = (function() {
     html += '<h1 class="attention-check-text">' +
       question + '</h1>';
 
+    // Add a subtitle
+    html += '<p>Please select your answer from the options below.</p>';
+
+    // Populate the options
     html += '<div id="attention-check-options-container">';
     if (trial.options_radio === false) {
       // Add dropdown for options
@@ -180,10 +184,17 @@ jsPsych.plugins['attention-check'] = (function() {
                 'class="jspsych-attention-check-options">';
       html += '<ul style="list-style-type: none; padding-left: 0pt;">';
       for (let i = 0; i < options.length; i++) {
-        html += '<li><input type="radio" id="R' + i +
-          '" name="option" value="R' + i + '">';
-        html += options[i];
-        html += '</input></li>';
+        html += `<li>` +
+                  `<input type="radio" id="R${i}" ` +
+                    `name="option" value="R${i}" ` +
+                    `style="visibility: hidden;"` +
+                  `>` +
+                  `</input>`;
+        html += `<button id="btn-R${i}" class="kbc-button">` +
+                  `${trial.option_keys[i]}` +
+                `</button>`;
+        html += `&nbsp; ${options[i]}`;
+        html += '</li>';
       }
       html += '</ul></form>';
     }
@@ -197,11 +208,24 @@ jsPsych.plugins['attention-check'] = (function() {
     html += '</div>';
 
 
+    // Submit mechanism
     html += '<div id="attention-check-button">';
-    html += '<button type="button" id="attention-check-selection-button" ' +
+
+    if (optionKeysEnabled && buttonKeyEnabled) {
+      // Add the keyboard glyph if using the option keys
+      html += '<button type="button" id="attention-check-selection-button" ' +
+      'class="kbc-button">';
+      html += `${trial.button_key}`;
+      html += '</button>';
+      html += `<p>${trial.button_text}</p>`;
+    } else {
+      // Add button if not using option keys
+      html += '<button type="button" id="attention-check-selection-button" ' +
       'class="jspsych-btn">';
-    html += trial.button_text;
-    html += '</button>';
+      html += trial.button_text;
+      html += '</button>';
+    }
+
     html += '</div>';
 
     // Append the instructions if provided
@@ -233,16 +257,25 @@ jsPsych.plugins['attention-check'] = (function() {
       } else {
         // Bind the keys to selecting each option
         document.addEventListener('keyup', buttonHandler);
+
+        // Hide the cursor
+        document.body.style.cursor = 'none';
       }
     }
 
-    // Disable radio buttons until input enabled
+    // Disable all input until input enabled
     if (trial.options_radio) {
+      // Disable radio buttons until input enabled
       for (let i = 0; i < trial.options.length; i++) {
+        // Radio buttons
         document.getElementById(`R${i}`).checked = false;
         document.getElementById(`R${i}`).disabled = true;
+
+        // Button glyphs
+        document.getElementById(`btn-R${i}`).classList.add('disabled');
       }
     } else {
+      // Drop-down
       document.getElementById('attention-check-options').disabled = true;
     }
 
@@ -253,7 +286,7 @@ jsPsych.plugins['attention-check'] = (function() {
       // Add timeout for completing the question
       mainTimeout = setTimeout(() => {
         // Mark the response as incorrect before waiting 5 seconds
-        displayFeedback(trial.feedback_incorrect, 'red');
+        displayFeedback(false, trial.feedback_incorrect, 'red');
 
         // Disable the form options
         if (trial.options_radio === false) {
@@ -278,6 +311,10 @@ jsPsych.plugins['attention-check'] = (function() {
           for (let i = 0; i < trial.options.length; i++) {
             document.getElementById(`R${i}`).checked = false;
             document.getElementById(`R${i}`).disabled = false;
+
+            // Change the appearance of the keyboard glyphs
+            document.getElementById(`btn-R${i}`).classList.remove('disabled');
+            document.getElementById(`btn-R${i}`).classList.add('enabled');
           }
         } else {
           document.getElementById('attention-check-options').disabled = false;
@@ -287,7 +324,7 @@ jsPsych.plugins['attention-check'] = (function() {
 
     /**
      * Handle the pressing of a button
-     * @param {object} _event information about the button press
+     * @param {any} _event information about the button press
      */
     function buttonHandler(_event) {
       // Check if input is being accepted
@@ -298,7 +335,7 @@ jsPsych.plugins['attention-check'] = (function() {
       }
 
       // Check what kind of button has been pressed
-      const keyCode = _event.code;
+      const keyCode = _event.key.toUpperCase();
 
       // Options can be selected by keys
       if (optionKeysEnabled) {
@@ -306,16 +343,22 @@ jsPsych.plugins['attention-check'] = (function() {
         const optionPressedIndex = trial.option_keys.indexOf(keyCode);
         if (optionPressedIndex >= 0) {
           if (trial.options_radio === false) {
-            if (document.getElementById('attention-check-options')
-                .disabled === false) {
-              document.getElementById('attention-check-options').selectedIndex =
-                `${optionPressedIndex}`;
-            }
+            // Drop-down scenario
+            document.getElementById('attention-check-options').selectedIndex =
+              `${optionPressedIndex}`;
           } else {
-            if (document.getElementById(`R${optionPressedIndex}`).disabled ===
-                false) {
-              document.getElementById(`R${optionPressedIndex}`).checked = true;
+            // De-select and de-activate any other buttons
+            for (let i = 0; i < trial.options.length; i++) {
+              document.getElementById(`R${i}`).checked = false;
+              document.getElementById(`btn-R${i}`).classList.remove('active');
             }
+
+            // Radio button scenario
+            document.getElementById(`R${optionPressedIndex}`).checked = true;
+
+            // Set the button as selected
+            document.getElementById(`btn-R${optionPressedIndex}`)
+                .classList.add('active');
           }
         }
       }
@@ -356,10 +399,10 @@ jsPsych.plugins['attention-check'] = (function() {
       trialData.selected_response = optionIndex;
 
       if (optionIndex === correctOptionIndex) {
-        displayFeedback(trial.feedback_correct, 'green');
+        displayFeedback(true, trial.feedback_correct, 'green');
         trialData.correct = true;
       } else {
-        displayFeedback(trial.feedback_incorrect, 'red');
+        displayFeedback(false, trial.feedback_incorrect, 'red');
         trialData.correct = false;
       }
 
@@ -368,10 +411,11 @@ jsPsych.plugins['attention-check'] = (function() {
 
     /**
      * Display feedback text in div.
-     * @param {*} _text feedback text to display
-     * @param {*} _fontColour colour of feedback text
+     * @param {boolean} _correct whether or not the answer was correct
+     * @param {string} _text feedback text to display
+     * @param {string} _fontColour colour of feedback text
      */
-    function displayFeedback(_text, _fontColour='black') {
+    function displayFeedback(_correct, _text, _fontColour='black') {
       // Insert feedback
       const feedbackContainer = document.getElementById('attention-feedback');
       const feedbackParagraph = document.createElement('h3');
@@ -400,6 +444,11 @@ jsPsych.plugins['attention-check'] = (function() {
     function endTrial() {
       // Remove event listeners
       document.removeEventListener('keyup', buttonHandler);
+
+      if (optionKeysEnabled) {
+        // Show the cursor if buttons enabled
+        document.body.style.cursor = 'auto';
+      }
 
       clearTimers();
 

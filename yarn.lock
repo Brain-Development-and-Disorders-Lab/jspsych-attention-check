@@ -3269,6 +3269,11 @@ jspsych@6.0:
   resolved "https://registry.yarnpkg.com/jspsych/-/jspsych-6.0.4.tgz#a2b74fee463016f2ac193e0bcb2ba524075d232c"
   integrity sha512-pH1V2/7k7huyXxhVVX8+obxC+Eky45X/QiFUqVUgq4GfHON58PT6VMjbwDmba38sNWzqNgdTLQv3ueqQRoilGg==
 
+keyboard-css@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/keyboard-css/-/keyboard-css-1.2.4.tgz#0249b4a505e513aeca830f812ca59b7e11fcd445"
+  integrity sha512-fhwBUfWZWAdaT9DoPVDsi/Rv6GBkIrv+82ahcuqUr0+e8NZABDh54lE3YI6Wxm5V1B0v4u0G09PQHMWei6nivg==
+
 kind-of@^3.0.2, kind-of@^3.0.3, kind-of@^3.2.0:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-3.2.2.tgz#31ea21a734bab9bbb0f32466d893aea51e4a3c64"
