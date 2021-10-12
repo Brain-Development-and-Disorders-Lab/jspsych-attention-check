@@ -211,10 +211,12 @@ jsPsych.plugins['attention-check'] = (function() {
     if (optionKeysEnabled && buttonKeyEnabled) {
       // Add the keyboard glyph if using the option keys
       html += '<button type="button" id="attention-check-selection-button" ' +
-      'class="kbc-button">';
+      'class="kbc-button" style="margin-right: 20px;">';
       html += `${trial.button_key}`;
       html += '</button>';
-      html += `&nbsp;<p>${trial.button_text}</p>`;
+      html += `&nbsp;<p id="attention-check-alternate-text">` +
+                `${trial.button_text}` +
+              `</p>`;
     } else {
       // Add button if not using option keys
       html += '<button type="button" id="attention-check-selection-button" ' +
@@ -407,7 +409,7 @@ jsPsych.plugins['attention-check'] = (function() {
         confirmationText.id = 'attention-check-confirmation';
         confirmationText.style.alignSelf = 'center';
         confirmationText.style.marginLeft = '20px';
-        confirmationText.textContent = 'Are you sure?';
+        confirmationText.innerHTML = '<i>Are you sure?</i>';
         mainContainer.appendChild(confirmationText);
       }
     }
@@ -464,6 +466,9 @@ jsPsych.plugins['attention-check'] = (function() {
       if (!(optionKeysEnabled && buttonKeyEnabled)) {
       // Update button text
         document.getElementById('attention-check-selection-button')
+            .innerText = continuingText;
+      } else {
+        document.getElementById('attention-check-alternate-text')
             .innerText = continuingText;
       }
 
