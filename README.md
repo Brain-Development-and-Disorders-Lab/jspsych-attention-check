@@ -49,6 +49,11 @@ $ yarn add jspsych-attention-check
 - **Type:** `String`
 - **Description:** A keycode that can be allocated to pressing the button if mouse input is not the only method of interaction.
 
+`confirmation`
+- **Required:** yes
+- **Type:** `Boolean`
+- **Description:** Confirm the submission of the participant's answer before continuing.
+
 `feedback_correct`
 - **Required:** yes
 - **Type:** `String`
@@ -63,11 +68,6 @@ $ yarn add jspsych-attention-check
 - **Required:** no
 - **Type:** `Function`
 - **Description:** The function called once feedback has been given.
-
-`instructions`
-- **Required:** no
-- **Type:** `String`
-- **Description:** HTML code that is placed below the options and buttons. It can be used to describe any custom controls or other useful information.
 
 `input_timeout`
 - **Required:** no

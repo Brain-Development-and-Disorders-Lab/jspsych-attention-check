@@ -63,6 +63,13 @@ jsPsych.plugins['attention-check'] = (function() {
         description: 'Specify a keypress to click the button. ' +
           'Ideal for alternate control schemes.',
       },
+      confirmation: {
+        type: jsPsych.plugins.parameterType.BOOLEAN,
+        pretty_name: 'Confirm answer selection',
+        default: undefined,
+        description: 'Require confirmation of the answer ' +
+          'selection before proceeding.',
+      },
       feedback_correct: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Correct feedback text',
@@ -117,7 +124,7 @@ jsPsych.plugins['attention-check'] = (function() {
     const inputTimeoutDuration = trial.input_timeout;
 
     // First click variable
-    let firstClick = false;
+    let firstClick = !trial.confirmation;
 
     // Initialise the trial data
     const trialData = {
@@ -432,7 +439,7 @@ jsPsych.plugins['attention-check'] = (function() {
       // Remove the form from the parent & and the text from the main
       formParentContainer.removeChild(formChild);
 
-      if (firstClick) {
+      if (firstClick && trial.confirmation === true) {
         // Get the button container
         const buttonContainer =
             document.getElementById('attention-check-button');
