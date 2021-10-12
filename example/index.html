@@ -3,39 +3,60 @@
   <head>
     <script src="../node_modules/jspsych/jspsych.js"></script>
     <script src="../src/jspsych-attention-check.js"></script>
+    <script src="../node_modules/jspsych/plugins/jspsych-instructions.js"></script>
     <link rel="stylesheet" href="../node_modules/jspsych/css/jspsych.css">
     <link rel="stylesheet" href="../node_modules/keyboard-css/dist/css/main.min.css">
   </head>
   <body></body>
   <script>
-    const timeline = [{
-      type: 'attention-check',
-      question: 'What is the objective of each game?',
-      options: [
-        'To find which symbol I think looks the best',
-        'To find the reward in the final room',
-        'To try and stop other people from reaching the reward',
-      ],
-      option_correct: 1,
-      option_keys: [
-        'D',
-        'F',
-        'J',
-      ],
-      options_radio: true,
-      input_timeout: 1500,
-      button_key: 'K',
-      button_text: 'Submit Answer',
-      feedback_correct: 'Correct! The objective of this game is ' +
+    const timeline = [
+      {
+        type: 'instructions',
+        pages: [
+          '<p>Page 1</p>',
+          '<p>Page 2</p>',
+          '<p>Page 3</p>',
+        ],
+        show_clickable_nav: true,
+      },
+      {
+        type: 'attention-check',
+        question: 'What is the objective of each game?',
+        options: [
+          'To find which symbol I think looks the best',
+          'To find the reward in the final room',
+          'To try and stop other people from reaching the reward',
+        ],
+        option_correct: 1,
+        option_keys: [
+          'D',
+          'F',
+          'J',
+        ],
+        options_radio: true,
+        input_timeout: 1500,
+        button_key: 'K',
+        button_text: 'Submit Answer',
+        feedback_correct: 'Correct! The objective of this game is ' +
+          'to find the reward in the final room.',
+        feedback_incorrect: 'Incorrect. The objective of this game is ' +
         'to find the reward in the final room.',
-      feedback_incorrect: 'Incorrect. The objective of this game is ' +
-      'to find the reward in the final room.',
-      instructions: ``,
-    }];
+      }
+    ];
+
+    const loop_node = {
+      timeline: timeline,
+      loop_function: function(data) {
+        if(jsPsych.data.getLastTrialData().values()[0].correct === false){
+          return true;
+        } else {
+          return false;
+        }
+      },
+    };
 
     jsPsych.init({
-      timeline: timeline,
-      show_progress_bar: true,
+      timeline: [loop_node],
     });
   </script>
 </html>

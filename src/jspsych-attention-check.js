@@ -81,13 +81,6 @@ jsPsych.plugins['attention-check'] = (function() {
         default: function() {},
         description: 'The function called once feedback has been given.',
       },
-      instructions: {
-        type: jsPsych.plugins.parameterType.STRING,
-        pretty_name: 'HTML code for optional instructions',
-        default: '',
-        description: 'HTML code included beneath the control questions ' +
-          'to instruct the participant on how to complete the questions.',
-      },
       input_timeout: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: 'Timeout duration for input',
@@ -105,13 +98,13 @@ jsPsych.plugins['attention-check'] = (function() {
   };
 
   plugin.trial = function(displayElement, trial) {
-    let html = '<div class="attention-check">';
+    let html = '<div id="attention-check" class="attention-check">';
 
     const question = trial.question;
     const options = trial.options;
     const correctOptionIndex = trial.option_correct;
 
-    let optionKeysEnabled = trial.option_keys.length > 0;
+    const optionKeysEnabled = trial.option_keys && trial.option_keys.length > 0;
     const buttonKeyEnabled = trial.button_key !== '';
 
     // Set to 'true' when input timeout expires
@@ -121,8 +114,10 @@ jsPsych.plugins['attention-check'] = (function() {
     let mainTimeout = null;
     let inputTimeout = null;
     let continueTimeout = null;
-
     const inputTimeoutDuration = trial.input_timeout;
+
+    // First click variable
+    let firstClick = false;
 
     // Initialise the trial data
     const trialData = {
@@ -206,15 +201,12 @@ jsPsych.plugins['attention-check'] = (function() {
 
     html += '</div>';
 
-    // Add a placeholder for feedback text
-    html += '<div id="attention-feedback-container">';
-    html += '<div id="attention-feedback">';
     html += '</div>';
     html += '</div>';
 
 
     // Submit mechanism
-    html += '<div class="attention-check-button">';
+    html += '<div id="attention-check-button" class="attention-check-button">';
 
     if (optionKeysEnabled && buttonKeyEnabled) {
       // Add the keyboard glyph if using the option keys
@@ -232,16 +224,6 @@ jsPsych.plugins['attention-check'] = (function() {
     }
 
     html += '</div>';
-
-    // Append the instructions if provided
-    if (trial.instructions !== '') {
-      html += '<br>';
-      html += '<hr>';
-      html += '<br>';
-      html += '<div id="attention-check-instructions">';
-      html += trial.instructions;
-      html += '</div>';
-    }
 
     html += '</div>';
 
@@ -265,6 +247,8 @@ jsPsych.plugins['attention-check'] = (function() {
 
         // Hide the cursor
         document.body.style.cursor = 'none';
+        document.getElementById('attention-check-options')
+            .style.cursor = 'none';
       }
     }
 
@@ -284,6 +268,10 @@ jsPsych.plugins['attention-check'] = (function() {
     } else {
       // Drop-down
       document.getElementById('attention-check-options').disabled = true;
+
+      // Button
+      document.getElementById(`attention-check-selection-button`)
+          .disabled = true;
     }
 
     /**
@@ -317,6 +305,8 @@ jsPsych.plugins['attention-check'] = (function() {
           }
         } else {
           document.getElementById('attention-check-options').disabled = false;
+          document.getElementById(`attention-check-selection-button`)
+              .disabled = false;
         }
       }, inputTimeoutDuration);
     }
@@ -376,37 +366,50 @@ jsPsych.plugins['attention-check'] = (function() {
      * @param {object} _event information about the response
      */
     function selectionHandler(_event) {
-      const endTime = (new Date).getTime();
-      const responseTime = endTime - startTime;
-      trialData.rt = responseTime;
+      if (firstClick) {
+        const endTime = (new Date).getTime();
+        const responseTime = endTime - startTime;
+        trialData.rt = responseTime;
 
-      let optionIndex;
-      if (trial.options_radio === false) {
-        optionIndex = document.getElementById('attention-check-options')
-            .selectedIndex;
-        document.getElementById('attention-check-options').disabled = true;
-      } else {
-        // Get the selected radio button
-        for (let i = 0; i < trial.options.length; i++) {
-          if (document.getElementById(`R${i}`).checked === true) {
-            optionIndex = i;
+        let optionIndex;
+        if (trial.options_radio === false) {
+          optionIndex = document.getElementById('attention-check-options')
+              .selectedIndex;
+          document.getElementById('attention-check-options').disabled = true;
+        } else {
+          // Get the selected radio button
+          for (let i = 0; i < trial.options.length; i++) {
+            if (document.getElementById(`R${i}`).checked === true) {
+              optionIndex = i;
+            }
+            document.getElementById(`R${i}`).disabled = true;
+            document.getElementById(`btn-R${i}`).classList.add('disabled');
           }
-          document.getElementById(`R${i}`).disabled = true;
-          document.getElementById(`btn-R${i}`).classList.add('disabled');
         }
-      }
 
-      trialData.selected_response = optionIndex;
+        trialData.selected_response = optionIndex;
 
-      if (optionIndex === correctOptionIndex) {
-        displayFeedback(true, trial.feedback_correct, 'green');
-        trialData.correct = true;
+        if (optionIndex === correctOptionIndex) {
+          displayFeedback(true, trial.feedback_correct, 'green');
+          trialData.correct = true;
+        } else {
+          displayFeedback(false, trial.feedback_incorrect, 'red');
+          trialData.correct = false;
+        }
+
+        clearTimers();
       } else {
-        displayFeedback(false, trial.feedback_incorrect, 'red');
-        trialData.correct = false;
-      }
+        firstClick = true;
 
-      clearTimers();
+        // Append confirmation text
+        const mainContainer = document.getElementById('attention-check-button');
+        const confirmationText = document.createElement('span');
+        confirmationText.id = 'attention-check-confirmation';
+        confirmationText.style.alignSelf = 'center';
+        confirmationText.style.marginLeft = '20px';
+        confirmationText.textContent = 'Are you sure?';
+        mainContainer.appendChild(confirmationText);
+      }
     }
 
     /**
@@ -420,13 +423,21 @@ jsPsych.plugins['attention-check'] = (function() {
       const formParentContainer =
           document.getElementById('attention-check-options-container');
       const formParentContainerHeight = formParentContainer.clientHeight;
-      console.debug(`Parent container height:`, formParentContainerHeight);
 
-      // Get the form
+      // Get the form & confirmation text
       const formChild = document.getElementById('attention-check-options');
 
-      // Remove the form from the parent
+      // Remove the form from the parent & and the text from the main
       formParentContainer.removeChild(formChild);
+
+      if (firstClick) {
+        // Get the button container
+        const buttonContainer =
+            document.getElementById('attention-check-button');
+        const confirmationText =
+            document.getElementById('attention-check-confirmation');
+        buttonContainer.removeChild(confirmationText);
+      }
 
       // Create a feedback child
       const feedbackParagraph = document.createElement('h3');
@@ -449,10 +460,11 @@ jsPsych.plugins['attention-check'] = (function() {
       document.getElementById('attention-check-selection-button')
           .removeEventListener('click', selectionHandler);
 
+      const continuingText = _correct ? 'Continue' : 'Review Instructions';
       if (!(optionKeysEnabled && buttonKeyEnabled)) {
       // Update button text
         document.getElementById('attention-check-selection-button')
-            .innerText = 'Continue';
+            .innerText = continuingText;
       }
 
       // Update binding to continue trials
@@ -474,8 +486,8 @@ jsPsych.plugins['attention-check'] = (function() {
       }
 
       clearTimers();
-
       displayElement.innerHTML = '';
+
       jsPsych.finishTrial(trialData);
     }
 

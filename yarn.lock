@@ -3264,10 +3264,10 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-jspsych@6.0:
-  version "6.0.4"
-  resolved "https://registry.yarnpkg.com/jspsych/-/jspsych-6.0.4.tgz#a2b74fee463016f2ac193e0bcb2ba524075d232c"
-  integrity sha512-pH1V2/7k7huyXxhVVX8+obxC+Eky45X/QiFUqVUgq4GfHON58PT6VMjbwDmba38sNWzqNgdTLQv3ueqQRoilGg==
+jspsych@6.3:
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/jspsych/-/jspsych-6.3.1.tgz#9d4335f03ed30a541acd7e9f3f8514cd64d92616"
+  integrity sha512-MtjovVPJw6tL/d5RAxwojixBy3HD0EnCcByF5+L01lbW5MELIwnon74XI6sD/WNBufvl86HEoIV/hFV04GB17Q==
 
 keyboard-css@^1.2.4:
   version "1.2.4"
