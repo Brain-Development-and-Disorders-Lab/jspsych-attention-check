@@ -154,6 +154,7 @@ jsPsych.plugins['attention-check'] = (function() {
         'display: flex;' +
         'flex-direction: row;' +
         'justify-content: center;' +
+        'align-items: center;' +
       '}' +
       '.jspsych-btn {' +
         'font-size: large;' +
@@ -197,8 +198,8 @@ jsPsych.plugins['attention-check'] = (function() {
                     `style="visibility: hidden;"` +
                   `>` +
                   `</input>`;
-        html += `<button id="btn-R${i}" class="kbc-button">` +
-                  `${trial.option_keys[i]}` +
+        html += `<button id="btn-R${i}" class="kbc-button kbc-button-lg">` +
+                  `<b>${trial.option_keys[i]}</b>` +
                 `</button>`;
         html += `&nbsp; ${options[i]}`;
         html += '</li>';
@@ -218,8 +219,8 @@ jsPsych.plugins['attention-check'] = (function() {
     if (optionKeysEnabled && buttonKeyEnabled) {
       // Add the keyboard glyph if using the option keys
       html += '<button type="button" id="attention-check-selection-button" ' +
-      'class="kbc-button" style="margin-right: 20px;">';
-      html += `${trial.button_key}`;
+      'class="kbc-button kbc-button-lg" style="margin-right: 20px;">';
+      html += `<b>${trial.button_key}</b>`;
       html += '</button>';
       html += `&nbsp;<p id="attention-check-alternate-text">` +
                 `${trial.button_text}` +
