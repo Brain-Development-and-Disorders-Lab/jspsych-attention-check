@@ -13,19 +13,19 @@
       {
         type: 'instructions',
         pages: [
-          '<p>Page 1</p>',
-          '<p>Page 2</p>',
-          '<p>Page 3</p>',
+          '<h1>Instructions</h1><p>Page 1 😴</p>',
+          '<h1>Instructions</h1><p>Page 2 🤔</p>',
+          '<h1>Instructions</h1><p>Page 3 🧠</p>',
         ],
         show_clickable_nav: true,
       },
       {
         type: 'attention-check',
-        question: 'What is the objective of each game?',
+        question: 'What is the objective of the game?',
         options: [
-          'To find which symbol I think looks the best',
-          'To find the reward in the final room',
-          'To try and stop other people from reaching the reward',
+          'Incorrect answer.',
+          'Correct answer!',
+          'Another incorrect answer.',
         ],
         option_correct: 1,
         option_keys: [
@@ -38,10 +38,8 @@
         button_key: 'K',
         confirmation: false,
         button_text: 'Submit Answer',
-        feedback_correct: 'Correct! The objective of this game is ' +
-          'to find the reward in the final room.',
-        feedback_incorrect: 'Incorrect. The objective of this game is ' +
-        'to find the reward in the final room.',
+        feedback_correct: 'Correct! You may now continue.',
+        feedback_incorrect: 'Incorrect. Please review the instructions.',
       }
     ];
 
