@@ -111,8 +111,20 @@ jsPsych.plugins['attention-check'] = (function() {
     const options = trial.options;
     const correctOptionIndex = trial.option_correct;
 
+    // Variable to detect if alternate keybindings were provided
+    // Option keys: keys used to select options
+    // Button key: key used to submit answer
     const optionKeysEnabled = trial.option_keys && trial.option_keys.length > 0;
-    const buttonKeyEnabled = trial.button_key !== '';
+    let buttonKeyEnabled = trial.button_key !== '';
+
+    // Check that the button key is not an option key
+    if (trial.option_keys.includes(trial.button_key) === true) {
+      console.error(`button_key '${trial.button_key}'` +
+        ` cannot be in option_keys`);
+
+      // Disable the button key if this is the case
+      buttonKeyEnabled = false;
+    }
 
     // Set to 'true' when input timeout expires
     let acceptInput = false;
@@ -165,14 +177,19 @@ jsPsych.plugins['attention-check'] = (function() {
     html += '</style>';
 
     // Add the question text
+    // Container
     html += '<div id="attention-check-container">';
-    html += '<h1 class="attention-check-text">' +
-      question + '</h1>';
 
-    // Add a subtitle
+    // Heading
+    html += '<h1 class="attention-check-text">' +
+              question +
+            '</h1>';
+
+    // Subtitle
     html += '<p>Please select your answer from the options below.</p>';
 
-    // Populate the options
+    // Options
+    // These are either in a drop-down or a selection of radio buttons
     html += '<div id="attention-check-options-container">';
     if (trial.options_radio === false) {
       // Add dropdown for options
@@ -207,15 +224,17 @@ jsPsych.plugins['attention-check'] = (function() {
       html += '</ul></form>';
     }
 
+    // Close #attention-check-options-container
     html += '</div>';
 
-    html += '</div>';
+    // Close #attention-check-container
     html += '</div>';
 
 
     // Submit mechanism
     html += '<div id="attention-check-button" class="attention-check-button">';
 
+    // Add a button element or a key glyph depending on answer input
     if (optionKeysEnabled && buttonKeyEnabled) {
       // Add the keyboard glyph if using the option keys
       html += '<button type="button" id="attention-check-selection-button" ' +
@@ -233,15 +252,16 @@ jsPsych.plugins['attention-check'] = (function() {
       html += '</button>';
     }
 
+    // Close #attention-check-button
     html += '</div>';
 
+    // Close #attention-check
     html += '</div>';
-
-    const startTime = (new Date).getTime();
 
     // Update displayed HTML
     displayElement.innerHTML = html;
 
+    const startTime = (new Date).getTime();
     configureTimeout();
 
     // Check for any custom key information.
@@ -377,6 +397,7 @@ jsPsych.plugins['attention-check'] = (function() {
      */
     function selectionHandler(_event) {
       if (firstClick) {
+        // Timing information
         const endTime = (new Date).getTime();
         const responseTime = endTime - startTime;
         trialData.rt = responseTime;
