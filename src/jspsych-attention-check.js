@@ -215,7 +215,7 @@ jsPsych.plugins['attention-check'] = (function() {
                     `style="visibility: hidden;"` +
                   `>` +
                   `</input>`;
-        html += `<button id="btn-R${i}" class="kbc-button kbc-button-lg">` +
+        html += `<button id="btn-R${i}" class="control-button">` +
                   `<b>${trial.option_keys[i]}</b>` +
                 `</button>`;
         html += `&nbsp; ${options[i]}`;
@@ -238,7 +238,7 @@ jsPsych.plugins['attention-check'] = (function() {
     if (optionKeysEnabled && buttonKeyEnabled) {
       // Add the keyboard glyph if using the option keys
       html += '<button type="button" id="attention-check-selection-button" ' +
-      'class="kbc-button kbc-button-lg" style="margin-right: 20px;">';
+      'class="control-button" style="margin-right: 20px;">';
       html += `<b>${trial.button_key}</b>`;
       html += '</button>';
       html += `&nbsp;<p id="attention-check-alternate-text">` +
@@ -291,9 +291,10 @@ jsPsych.plugins['attention-check'] = (function() {
         document.getElementById(`R${i}`).disabled = true;
 
         // Button glyphs
-        document.getElementById(`btn-R${i}`).classList.add('disabled');
+        document.getElementById(`btn-R${i}`)
+            .classList.add('control-button-disabled');
         document.getElementById(`attention-check-selection-button`)
-            .classList.add('disabled');
+            .classList.add('control-button-disabled');
       }
     } else {
       // Drop-down
@@ -329,9 +330,10 @@ jsPsych.plugins['attention-check'] = (function() {
             document.getElementById(`R${i}`).disabled = false;
 
             // Change the appearance of the keyboard glyphs
-            document.getElementById(`btn-R${i}`).classList.remove('disabled');
+            document.getElementById(`btn-R${i}`)
+                .classList.remove('control-button-disabled');
             document.getElementById(`attention-check-selection-button`)
-                .classList.remove('disabled');
+                .classList.remove('control-button-disabled');
           }
         } else {
           document.getElementById('attention-check-options').disabled = false;
@@ -369,7 +371,8 @@ jsPsych.plugins['attention-check'] = (function() {
             // De-select and de-activate any other buttons
             for (let i = 0; i < trial.options.length; i++) {
               document.getElementById(`R${i}`).checked = false;
-              document.getElementById(`btn-R${i}`).classList.remove('active');
+              document.getElementById(`btn-R${i}`)
+                  .classList.remove('control-button-selected');
             }
 
             // Radio button scenario
@@ -377,7 +380,7 @@ jsPsych.plugins['attention-check'] = (function() {
 
             // Set the button as selected
             document.getElementById(`btn-R${optionPressedIndex}`)
-                .classList.add('active');
+                .classList.add('control-button-selected');
           }
         }
       }
@@ -414,7 +417,8 @@ jsPsych.plugins['attention-check'] = (function() {
               optionIndex = i;
             }
             document.getElementById(`R${i}`).disabled = true;
-            document.getElementById(`btn-R${i}`).classList.add('disabled');
+            document.getElementById(`btn-R${i}`)
+                .classList.add('control-button-disabled');
           }
         }
 
