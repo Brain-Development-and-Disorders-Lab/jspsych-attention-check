@@ -114,12 +114,22 @@ jsPsych.plugins['attention-check'] = (function() {
     // Variable to detect if alternate keybindings were provided
     // Option keys: keys used to select options
     // Button key: key used to submit answer
-    const optionKeysEnabled = trial.option_keys && trial.option_keys.length > 0;
+    let optionKeysEnabled = trial.option_keys !== undefined &&
+                            trial.option_keys.length > 0;
     let buttonKeyEnabled = trial.button_key !== '';
 
+    if (optionKeysEnabled === true &&
+        trial.option_keys.length !== trial.options.length) {
+      console.warn(`${trial.option_keys.length} keys specified ` +
+        `for ${trial.options.length} options. Keys will not be bound.`);
+      optionKeysEnabled = false;
+    }
+
     // Check that the button key is not an option key
-    if (trial.option_keys.includes(trial.button_key) === true) {
-      console.error(`button_key '${trial.button_key}'` +
+    if (optionKeysEnabled === true &&
+        buttonKeyEnabled === true &&
+        trial.option_keys.includes(trial.button_key) === true) {
+      throw new Error(`button_key '${trial.button_key}'` +
         ` cannot be in option_keys`);
 
       // Disable the button key if this is the case
@@ -150,7 +160,7 @@ jsPsych.plugins['attention-check'] = (function() {
     html +=
       '.jspsych-attention-check-options { ' +
         'display: inline-block; padding: 6px 12px; ' +
-        'margin-top: 10%; margin-bottom: 10%;' +
+        'margin-top: 10px; margin-bottom: 10px;' +
         'font-size: large; font-weight: 400; ' +
         'font-family: "Open Sans", "Arial", sans-serif; ' +
         'cursor: pointer; line-height: 1.4; text-align: left; ' +
@@ -209,15 +219,25 @@ jsPsych.plugins['attention-check'] = (function() {
                 'class="jspsych-attention-check-options">';
       html += '<ul style="list-style-type: none; padding-left: 0pt;">';
       for (let i = 0; i < options.length; i++) {
-        html += `<li>` +
-                  `<input type="radio" id="R${i}" ` +
-                    `name="option" value="R${i}" ` +
-                    `style="visibility: hidden;"` +
-                  `>` +
-                  `</input>`;
-        html += `<button id="btn-R${i}" class="control-button">` +
-                  `<b>${trial.option_keys[i]}</b>` +
-                `</button>`;
+        // Only show button keys when enabled
+        if (optionKeysEnabled === true) {
+          html += `<li>` +
+            `<input type="radio" id="R${i}" ` +
+              `name="option" value="R${i}" ` +
+              `style="visibility: hidden;"` +
+            `>` +
+            `</input>`;
+          html += `<button id="btn-R${i}" class="control-button">` +
+            `<b>${trial.option_keys[i]}</b>` +
+          `</button>`;
+        } else {
+          html += `<li>` +
+            `<input type="radio" id="R${i}" ` +
+              `name="option" value="R${i}" ` +
+            `>` +
+            `</input>`;
+        }
+
         html += `&nbsp; ${options[i]}`;
         html += '</li>';
       }
@@ -235,7 +255,7 @@ jsPsych.plugins['attention-check'] = (function() {
     html += '<div id="attention-check-button" class="attention-check-button">';
 
     // Add a button element or a key glyph depending on answer input
-    if (optionKeysEnabled && buttonKeyEnabled) {
+    if (buttonKeyEnabled === true) {
       // Add the keyboard glyph if using the option keys
       html += '<button type="button" id="attention-check-selection-button" ' +
       'class="control-button" style="margin-right: 20px;">';
@@ -264,37 +284,34 @@ jsPsych.plugins['attention-check'] = (function() {
     const startTime = (new Date).getTime();
     configureTimeout();
 
-    // Check for any custom key information.
-    if (optionKeysEnabled) {
-      // Check that the number of keys equals the number of options.
-      if (trial.option_keys.length !== trial.options.length) {
-        console.warn(`${trial.option_keys.length} keys specified ` +
-          `for ${trial.options.length} options. Keys will not be bound.`);
-        optionKeysEnabled = false;
-      } else {
-        // Bind the keys to selecting each option
-        document.addEventListener('keyup', buttonHandler);
+    // Bind the keys if required
+    if (optionKeysEnabled === true) {
+      // Bind the keys to selecting each option
+      document.addEventListener('keyup', buttonHandler);
+    }
 
-        // Hide the cursor
-        document.body.style.cursor = 'none';
-        document.getElementById('attention-check-options')
-            .style.cursor = 'none';
-      }
+    // Hide the cursor if entirely keyboard controls
+    if (optionKeysEnabled === true && buttonKeyEnabled === true) {
+      document.body.style.cursor = 'none';
+      document.getElementById('attention-check-options')
+          .style.cursor = 'none';
     }
 
     // Disable all input until input enabled
-    if (trial.options_radio) {
+    if (trial.options_radio === true) {
       // Disable radio buttons until input enabled
       for (let i = 0; i < trial.options.length; i++) {
         // Radio buttons
         document.getElementById(`R${i}`).checked = false;
         document.getElementById(`R${i}`).disabled = true;
 
-        // Button glyphs
-        document.getElementById(`btn-R${i}`)
-            .classList.add('control-button-disabled');
-        document.getElementById(`attention-check-selection-button`)
-            .classList.add('control-button-disabled');
+        if (optionKeysEnabled === true) {
+          // Button glyphs
+          document.getElementById(`btn-R${i}`)
+              .classList.add('control-button-disabled');
+          document.getElementById(`attention-check-selection-button`)
+              .classList.add('control-button-disabled');
+        }
       }
     } else {
       // Drop-down
@@ -324,16 +341,18 @@ jsPsych.plugins['attention-check'] = (function() {
       inputTimeout = setTimeout(() => {
         acceptInput = true;
         // Enable radio buttons
-        if (trial.options_radio) {
+        if (trial.options_radio === true) {
           for (let i = 0; i < trial.options.length; i++) {
             document.getElementById(`R${i}`).checked = false;
             document.getElementById(`R${i}`).disabled = false;
 
-            // Change the appearance of the keyboard glyphs
-            document.getElementById(`btn-R${i}`)
-                .classList.remove('control-button-disabled');
-            document.getElementById(`attention-check-selection-button`)
-                .classList.remove('control-button-disabled');
+            if (optionKeysEnabled === true) {
+              // Change the appearance of the keyboard glyphs
+              document.getElementById(`btn-R${i}`)
+                  .classList.remove('control-button-disabled');
+              document.getElementById(`attention-check-selection-button`)
+                  .classList.remove('control-button-disabled');
+            }
           }
         } else {
           document.getElementById('attention-check-options').disabled = false;
@@ -359,7 +378,7 @@ jsPsych.plugins['attention-check'] = (function() {
       const keyCode = _event.key.toUpperCase();
 
       // Options can be selected by keys
-      if (optionKeysEnabled) {
+      if (optionKeysEnabled === true) {
         // Check what key was pressed
         const optionPressedIndex = trial.option_keys.indexOf(keyCode);
         if (optionPressedIndex >= 0) {
@@ -371,6 +390,7 @@ jsPsych.plugins['attention-check'] = (function() {
             // De-select and de-activate any other buttons
             for (let i = 0; i < trial.options.length; i++) {
               document.getElementById(`R${i}`).checked = false;
+
               document.getElementById(`btn-R${i}`)
                   .classList.remove('control-button-selected');
             }
@@ -386,7 +406,7 @@ jsPsych.plugins['attention-check'] = (function() {
       }
 
       // Button can be pressed using a key
-      if (buttonKeyEnabled) {
+      if (buttonKeyEnabled === true) {
         if (keyCode === trial.button_key) {
           // Click the button if the key is pressed
           document.getElementById('attention-check-selection-button').click();
@@ -417,8 +437,11 @@ jsPsych.plugins['attention-check'] = (function() {
               optionIndex = i;
             }
             document.getElementById(`R${i}`).disabled = true;
-            document.getElementById(`btn-R${i}`)
-                .classList.add('control-button-disabled');
+
+            if (optionKeysEnabled === true) {
+              document.getElementById(`btn-R${i}`)
+                  .classList.add('control-button-disabled');
+            }
           }
         }
 
@@ -518,7 +541,7 @@ jsPsych.plugins['attention-check'] = (function() {
       // Remove event listeners
       document.removeEventListener('keyup', buttonHandler);
 
-      if (optionKeysEnabled) {
+      if (optionKeysEnabled === true) {
         // Show the cursor if buttons enabled
         document.body.style.cursor = 'auto';
       }
