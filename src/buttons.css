@@ -6,12 +6,16 @@
   background-color: #e7e7e7;
   color: #575757;
   width: auto;
-  height: auto;
   padding: 16px 24px 16px 24px;
-  border-radius: 6px;
+  border-radius: 20px;
   border: 2px solid #d8d8d8;
   box-shadow: 3px 3px #d3d3d3;
   cursor: none;
+}
+
+.control-button::after {
+  display: block;
+  padding-bottom: 100%;
 }
 
 /* Hover behaviour */

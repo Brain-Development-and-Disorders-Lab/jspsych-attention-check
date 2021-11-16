@@ -9,7 +9,7 @@
  * @author Henry Burgess <henry.burgess@wustl.edu>
  *
  */
-
+// Instantiate the plugin function
 jsPsych.plugins['attention-check'] = (function() {
   const plugin = {};
 
@@ -116,7 +116,7 @@ jsPsych.plugins['attention-check'] = (function() {
     // Button key: key used to submit answer
     let optionKeysEnabled = trial.option_keys !== undefined &&
                             trial.option_keys.length > 0;
-    let buttonKeyEnabled = trial.button_key !== '';
+    const buttonKeyEnabled = trial.button_key !== '';
 
     if (optionKeysEnabled === true &&
         trial.option_keys.length !== trial.options.length) {
@@ -131,9 +131,6 @@ jsPsych.plugins['attention-check'] = (function() {
         trial.option_keys.includes(trial.button_key) === true) {
       throw new Error(`button_key '${trial.button_key}'` +
         ` cannot be in option_keys`);
-
-      // Disable the button key if this is the case
-      buttonKeyEnabled = false;
     }
 
     // Set to 'true' when input timeout expires
@@ -228,7 +225,7 @@ jsPsych.plugins['attention-check'] = (function() {
             `>` +
             `</input>`;
           html += `<button id="btn-R${i}" class="control-button">` +
-            `<b>${trial.option_keys[i]}</b>` +
+            `<b>${getButtonText(trial.option_keys[i])}</b>` +
           `</button>`;
         } else {
           html += `<li>` +
@@ -259,16 +256,16 @@ jsPsych.plugins['attention-check'] = (function() {
       // Add the keyboard glyph if using the option keys
       html += '<button type="button" id="attention-check-selection-button" ' +
       'class="control-button" style="margin-right: 20px;">';
-      html += `<b>${trial.button_key}</b>`;
+      html += `<b>${getButtonText(trial.button_key)}</b>`;
       html += '</button>';
       html += `&nbsp;<p id="attention-check-alternate-text">` +
-                `${trial.button_text}` +
+                `${getButtonText(trial.button_text)}` +
               `</p>`;
     } else {
       // Add button if not using option keys
       html += '<button type="button" id="attention-check-selection-button" ' +
       'class="jspsych-btn">';
-      html += trial.button_text;
+      html += getButtonText(trial.button_text);
       html += '</button>';
     }
 
@@ -364,23 +361,20 @@ jsPsych.plugins['attention-check'] = (function() {
 
     /**
      * Handle the pressing of a button
-     * @param {any} _event information about the button press
+     * @param {KeyboardEvent} event information about the button press
      */
-    function buttonHandler(_event) {
+    function buttonHandler(event) {
       // Check if input is being accepted
-      _event.preventDefault();
+      event.preventDefault();
       if (!acceptInput) {
         // Do nothing if input is not being accepted yet
         return;
       }
 
-      // Check what kind of button has been pressed
-      const keyCode = _event.key.toUpperCase();
-
       // Options can be selected by keys
       if (optionKeysEnabled === true) {
         // Check what key was pressed
-        const optionPressedIndex = trial.option_keys.indexOf(keyCode);
+        const optionPressedIndex = trial.option_keys.indexOf(event.key);
         if (optionPressedIndex >= 0) {
           if (trial.options_radio === false) {
             // Drop-down scenario
@@ -407,7 +401,7 @@ jsPsych.plugins['attention-check'] = (function() {
 
       // Button can be pressed using a key
       if (buttonKeyEnabled === true) {
-        if (keyCode === trial.button_key) {
+        if (event.key === trial.button_key) {
           // Click the button if the key is pressed
           document.getElementById('attention-check-selection-button').click();
         }
@@ -416,9 +410,9 @@ jsPsych.plugins['attention-check'] = (function() {
 
     /**
      * Handle the selection of a response
-     * @param {object} _event information about the response
+     * @param {MouseEvent} event information about the response
      */
-    function selectionHandler(_event) {
+    function selectionHandler(event) {
       if (firstClick) {
         // Timing information
         const endTime = (new Date).getTime();
@@ -472,11 +466,11 @@ jsPsych.plugins['attention-check'] = (function() {
 
     /**
      * Display feedback text in div.
-     * @param {boolean} _correct whether or not the answer was correct
-     * @param {string} _text feedback text to display
-     * @param {string} _fontColour colour of feedback text
+     * @param {boolean} correct whether or not the answer was correct
+     * @param {string} text feedback text to display
+     * @param {string} fontColour colour of feedback text
      */
-    function displayFeedback(_correct, _text, _fontColour='black') {
+    function displayFeedback(correct, text, fontColour='black') {
       // Get the parent container & height
       const formParentContainer =
           document.getElementById('attention-check-options-container');
@@ -499,8 +493,8 @@ jsPsych.plugins['attention-check'] = (function() {
 
       // Create a feedback child
       const feedbackParagraph = document.createElement('h3');
-      feedbackParagraph.textContent = _text;
-      feedbackParagraph.style.color = _fontColour;
+      feedbackParagraph.textContent = text;
+      feedbackParagraph.style.color = fontColour;
 
       // Update the styling of the parent container
       formParentContainer.style.display = 'flex';
@@ -518,7 +512,7 @@ jsPsych.plugins['attention-check'] = (function() {
       document.getElementById('attention-check-selection-button')
           .removeEventListener('click', selectionHandler);
 
-      const continuingText = _correct ? 'Continue' : 'Review Instructions';
+      const continuingText = correct ? 'Continue' : 'Review Instructions';
       if (!(optionKeysEnabled && buttonKeyEnabled)) {
       // Update button text
         document.getElementById('attention-check-selection-button')
@@ -550,6 +544,21 @@ jsPsych.plugins['attention-check'] = (function() {
       displayElement.innerHTML = '';
 
       jsPsych.finishTrial(trialData);
+    }
+
+    /**
+     * Generate and return text to display on a button
+     * @param {string} text the text to add to the button
+     * @return {string}
+     */
+    function getButtonText(text) {
+      if (text === ' ') {
+        return 'Space';
+      } else if ([...text].length === 1) {
+        return text.toUpperCase();
+      } else {
+        return text;
+      }
     }
 
     /**
