@@ -441,6 +441,9 @@ jsPsych.plugins['attention-check'] = (function() {
 
         trialData.selected_response = optionIndex;
 
+        // Disable the option keys, mitigating a bug
+        optionKeysEnabled = false;
+
         if (optionIndex === correctOptionIndex) {
           displayFeedback(true, trial.feedback_correct, 'green');
           trialData.correct = true;
