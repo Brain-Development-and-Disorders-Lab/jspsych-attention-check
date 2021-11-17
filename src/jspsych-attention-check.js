@@ -50,19 +50,51 @@ jsPsych.plugins['attention-check'] = (function() {
         description: 'Define a key corresponding to each ' +
           'option that is presented. Ideal for alternate control schemes.',
       },
-      button_text: {
-        type: jsPsych.plugins.parameterType.STRING,
-        pretty_name: 'Button text',
-        default: 'Submit',
-        description: 'The text displayed on the button below the options.',
-      },
-      button_key: {
+
+      // Submit button text and description
+      submit_button_key: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Button key',
         default: '',
         description: 'Specify a keypress to click the button. ' +
           'Ideal for alternate control schemes.',
       },
+      submit_button_text: {
+        type: jsPsych.plugins.parameterType.STRING,
+        pretty_name: 'Button text',
+        default: 'Submit',
+        description: 'The text displayed on the submit button.',
+      },
+      submit_button_message: {
+        type: jsPsych.plugins.parameterType.STRING,
+        pretty_name: 'Submit button message',
+        default: 'Submit',
+        description: 'The message displayed next to the submit button.',
+      },
+
+      // Continue button text and description
+      continue_button_text: {
+        type: jsPsych.plugins.parameterType.STRING,
+        pretty_name: 'Button text',
+        default: 'Continue',
+        description: 'The text displayed on the continue button.',
+      },
+      continue_button_message_correct: {
+        type: jsPsych.plugins.parameterType.STRING,
+        pretty_name: 'Continue button message',
+        default: 'Continue',
+        description: 'The message displayed next to the continue button ' +
+                     'after a correct response.',
+      },
+      continue_button_message_incorrect: {
+        type: jsPsych.plugins.parameterType.STRING,
+        pretty_name: 'Continue button message',
+        default: 'Review Instructions',
+        description: 'The message displayed next to the continue button ' +
+                     'after an incorrect response.',
+      },
+
+      // Confirmation message before submitting the response
       confirmation: {
         type: jsPsych.plugins.parameterType.BOOLEAN,
         pretty_name: 'Confirm answer selection',
@@ -116,7 +148,7 @@ jsPsych.plugins['attention-check'] = (function() {
     // Button key: key used to submit answer
     let optionKeysEnabled = trial.option_keys !== undefined &&
                             trial.option_keys.length > 0;
-    const buttonKeyEnabled = trial.button_key !== '';
+    const buttonKeyEnabled = trial.submit_button_key !== '';
 
     if (optionKeysEnabled === true &&
         trial.option_keys.length !== trial.options.length) {
@@ -128,8 +160,8 @@ jsPsych.plugins['attention-check'] = (function() {
     // Check that the button key is not an option key
     if (optionKeysEnabled === true &&
         buttonKeyEnabled === true &&
-        trial.option_keys.includes(trial.button_key) === true) {
-      throw new Error(`button_key '${trial.button_key}'` +
+        trial.option_keys.includes(trial.submit_button_key) === true) {
+      throw new Error(`button_key '${trial.submit_button_key}'` +
         ` cannot be in option_keys`);
     }
 
@@ -256,16 +288,16 @@ jsPsych.plugins['attention-check'] = (function() {
       // Add the keyboard glyph if using the option keys
       html += '<button type="button" id="attention-check-selection-button" ' +
       'class="control-button" style="margin-right: 20px;">';
-      html += `<b>${getButtonText(trial.button_key)}</b>`;
+      html += `<b>${getButtonText(trial.submit_button_key)}</b>`;
       html += '</button>';
       html += `&nbsp;<p id="attention-check-alternate-text">` +
-                `${getButtonText(trial.button_text)}` +
+                `${getButtonText(trial.submit_button_text)}` +
               `</p>`;
     } else {
       // Add button if not using option keys
       html += '<button type="button" id="attention-check-selection-button" ' +
       'class="jspsych-btn">';
-      html += getButtonText(trial.button_text);
+      html += getButtonText(trial.submit_button_text);
       html += '</button>';
     }
 
@@ -401,7 +433,7 @@ jsPsych.plugins['attention-check'] = (function() {
 
       // Button can be pressed using a key
       if (buttonKeyEnabled === true) {
-        if (event.key === trial.button_key) {
+        if (event.key === trial.submit_button_key) {
           // Click the button if the key is pressed
           document.getElementById('attention-check-selection-button').click();
         }
@@ -439,6 +471,7 @@ jsPsych.plugins['attention-check'] = (function() {
           }
         }
 
+        // Store the selected response
         trialData.selected_response = optionIndex;
 
         // Disable the option keys, mitigating a bug
@@ -515,15 +548,21 @@ jsPsych.plugins['attention-check'] = (function() {
       document.getElementById('attention-check-selection-button')
           .removeEventListener('click', selectionHandler);
 
-      const continuingText = correct ? 'Continue' : 'Review Instructions';
-      if (!(optionKeysEnabled && buttonKeyEnabled)) {
-      // Update button text
+      // Update the text displayed on and beside the continue button
+      const continueButtonText = trial.continue_button_text;
+      const continueMessage = correct ?
+                                trial.continue_button_message_correct :
+                                trial.continue_button_message_incorrect;
+
+      // Update the button text, if keys are not being used
+      if (buttonKeyEnabled === false) {
         document.getElementById('attention-check-selection-button')
-            .innerText = continuingText;
-      } else {
-        document.getElementById('attention-check-alternate-text')
-            .innerText = continuingText;
+            .innerText = continueButtonText;
       }
+
+      // Update the message text beside the button
+      document.getElementById('attention-check-alternate-text')
+          .innerText = continueMessage;
 
       // Update binding to continue trials
       document.getElementById('attention-check-selection-button')
