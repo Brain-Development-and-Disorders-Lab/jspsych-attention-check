@@ -1,62 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="../node_modules/jspsych/jspsych.js"></script>
-    <script src="../src/jspsych-attention-check.js"></script>
-    <script src="../node_modules/jspsych/plugins/jspsych-instructions.js"></script>
-    <link rel="stylesheet" href="../node_modules/jspsych/css/jspsych.css">
-    <link rel="stylesheet" href="../src/buttons.css">
+    <script src="./example.js" type="module"></script>
   </head>
   <body></body>
-  <script>
-    const timeline = [
-      {
-        type: 'instructions',
-        pages: [
-          '<h1>Instructions</h1><p>Page 1 😴</p>',
-          '<h1>Instructions</h1><p>Page 2 🤔</p>',
-          '<h1>Instructions</h1><p>Page 3 🧠</p>',
-        ],
-        show_clickable_nav: true,
-      },
-      {
-        type: 'attention-check',
-        question: 'What is the objective of the game?',
-        options: [
-          'Incorrect answer.',
-          'Correct answer!',
-          'Another incorrect answer.',
-        ],
-        option_correct: 1,
-        option_keys: [
-          '1',
-          '2',
-          '3',
-        ],
-        options_radio: true,
-        input_timeout: 1500,
-        submit_button_key: '4',
-        submit_button_text: 'Submit Answer',
-        confirmation: true,
-        feedback_correct: 'Correct! You may now continue.',
-        feedback_incorrect: 'Incorrect. Please review the instructions.',
-        instructions: 'Press the button.',
-      }
-    ];
-
-    const loop_node = {
-      timeline: timeline,
-      loop_function: function(data) {
-        if(jsPsych.data.getLastTrialData().values()[0].correct === false){
-          return true;
-        } else {
-          return false;
-        }
-      },
-    };
-
-    jsPsych.init({
-      timeline: [loop_node],
-    });
-  </script>
 </html>
