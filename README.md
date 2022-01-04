@@ -2,7 +2,7 @@
 
 _A jsPsych plugin for adding multiple-choice attention check questions to an experiment timeline._
 
-_Note: This package is NOT compatible with jsPsych version 7.0._
+_Note: This package is NOT compatible with jsPsych versions >= 7.0._
 
 ![npm](https://img.shields.io/npm/v/jspsych-attention-check)
 
@@ -22,6 +22,10 @@ yarn add jspsych-attention-check
 
 ## Parameters
 
+### Question and options
+
+Use these parameters to define the attention check prompt and the possible options.
+
 `question`
 
 - **Required:** yes
@@ -32,12 +36,13 @@ yarn add jspsych-attention-check
 
 - **Required:** yes
 - **Type:** `Array<String>`
-- **Description:** A list of responses that the participant can select as their answer to the control question.
+- **Description:** A list of responses that the participant can select as their answer to the attention-check question.
 
 `options_radio`
 
 - **Required:** no
 - **Type:** `Boolean`
+- **Default:** `false`
 - **Description:** Change the options to display as a series of radio options instead of a drop-down.
 
 `option_correct`
@@ -50,25 +55,61 @@ yarn add jspsych-attention-check
 
 - **Required:** no
 - **Type:** `List<String>`
+- **Default:** `[]`
 - **Description:** A list of keys that are allocated to selecting each of the options listed. Examples include: `'E'`, `' '` (Space bar), or `'Enter'`.
 
-`button_text`
+### Submit button
+
+The 'submit' button is displayed to the participant before they submit their response.
+
+`submit_button_key`
 
 - **Required:** no
 - **Type:** `String`
-- **Description:** The text displayed on the button below the options.
-
-`button_key`
-
-- **Required:** no
-- **Type:** `String`
+- **Default:** `''` (none)
 - **Description:** A key that can be allocated to pressing the button if mouse input is not the only method of interaction. Examples include: `'E'`, `' '` (Space bar), or `'Enter'`.
+
+`submit_button_text`
+
+- **Required:** no
+- **Type:** `String`
+- **Default:** `Submit`
+- **Description:** The text displayed on the submit button.
+
+### Continue button
+
+The 'continue' button is displayed to the participant after they submit their response.
+
+`continue_button_text`
+
+- **Required:** no
+- **Type:** `String`
+- **Default:** `Continue`
+- **Description:** The text displayed on the continue button.
+
+`continue_button_message_correct`
+
+- **Required:** no
+- **Type:** `String`
+- **Default:** `Continue`
+- **Description:** The message displayed next to the continue button after a correct response.
+
+`continue_button_message_incorrect`
+
+- **Required:** no
+- **Type:** `String`
+- **Default:** `Continue`
+- **Description:** The message displayed next to the continue button after an incorrect response.
+
+### Confirmation and feedback
+
+Participants can be given the chance to confirm their answer before submitting. Additionally, the feedback for correct and incorrect answers can be specified.
 
 `confirmation`
 
 - **Required:** yes
 - **Type:** `Boolean`
-- **Description:** Confirm the submission of the participant's answer before continuing.
+- **Description:** Require confirmation of the answer selection before submitting.
 
 `feedback_correct`
 
@@ -82,23 +123,19 @@ yarn add jspsych-attention-check
 - **Type:** `String`
 - **Description:** Feedback to be given for an incorrect answer.
 
-`feedback_function`
-
-- **Required:** no
-- **Type:** `Function`
-- **Description:** The function called once feedback has been given.
-
 `input_timeout`
 
 - **Required:** no
 - **Type:** `int`
-- **Description:** A timeout to allow the participant to read the questions before allowing input, default time is 300 milliseconds.
+- **Default:** `300`
+- **Description:** A timeout to allow the participant to read the questions before allowing input.
 
-`timeout`
+`main_timeout`
 
 - **Required:** no
 - **Type:** `int`
-- **Description:** A timeout for completing the control questions in milliseconds, default time is 30 seconds.
+- **Default:** `30000`
+- **Description:** A timeout for completing the attention-check question, measured in milliseconds.
 
 ## Example Usage
 

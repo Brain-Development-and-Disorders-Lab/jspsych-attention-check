@@ -27,7 +27,7 @@ jsPsych.plugins['attention-check'] = (function() {
         pretty_name: 'List of responses in drop-down',
         default: undefined,
         description: 'A list of responses that the participant can select as ' +
-          'their answer to the control question.',
+          'their answer to the attention-check question.',
       },
       options_radio: {
         type: jsPsych.plugins.parameterType.BOOLEAN,
@@ -48,7 +48,7 @@ jsPsych.plugins['attention-check'] = (function() {
         pretty_name: 'Keycodes assigned to each option',
         default: [],
         description: 'Define a key corresponding to each ' +
-          'option that is presented. Ideal for alternate control schemes.',
+          'option that is presented. Ideal for alternate input schemes.',
       },
 
       // Submit button text and description
@@ -57,19 +57,13 @@ jsPsych.plugins['attention-check'] = (function() {
         pretty_name: 'Button key',
         default: '',
         description: 'Specify a keypress to click the button. ' +
-          'Ideal for alternate control schemes.',
+          'Ideal for alternate input schemes.',
       },
       submit_button_text: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Button text',
         default: 'Submit',
         description: 'The text displayed on the submit button.',
-      },
-      submit_button_message: {
-        type: jsPsych.plugins.parameterType.STRING,
-        pretty_name: 'Submit button message',
-        default: 'Submit',
-        description: 'The message displayed next to the submit button.',
       },
 
       // Continue button text and description
@@ -89,7 +83,7 @@ jsPsych.plugins['attention-check'] = (function() {
       continue_button_message_incorrect: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Continue button message',
-        default: 'Review Instructions',
+        default: 'Continue',
         description: 'The message displayed next to the continue button ' +
                      'after an incorrect response.',
       },
@@ -100,7 +94,7 @@ jsPsych.plugins['attention-check'] = (function() {
         pretty_name: 'Confirm answer selection',
         default: undefined,
         description: 'Require confirmation of the answer ' +
-          'selection before proceeding.',
+          'selection before submitting.',
       },
       feedback_correct: {
         type: jsPsych.plugins.parameterType.STRING,
@@ -114,23 +108,17 @@ jsPsych.plugins['attention-check'] = (function() {
         default: undefined,
         description: 'Feedback to be given for an incorrect answer.',
       },
-      feedback_function: {
-        type: jsPsych.plugins.parameterType.FUNCTION,
-        pretty_name: 'Feedback function',
-        default: function() {},
-        description: 'The function called once feedback has been given.',
-      },
       input_timeout: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: 'Timeout duration for input',
         default: 300,
         description: 'Timeout before input can be given.',
       },
-      timeout: {
+      main_timeout: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: 'Timeout duration for question',
         default: 30000,
-        description: 'Timeout to be enforced for completing the control ' +
+        description: 'Time limit to complete the attention-check ' +
           'question.',
       },
     },
@@ -257,7 +245,7 @@ jsPsych.plugins['attention-check'] = (function() {
             `>` +
             `</input>`;
           html += `<button id="btn-R${i}" class="control-button">` +
-            `<b>${getButtonText(trial.option_keys[i])}</b>` +
+            `<b>${getButtonLabel(trial.option_keys[i])}</b>` +
           `</button>`;
         } else {
           html += `<li>` +
@@ -288,16 +276,16 @@ jsPsych.plugins['attention-check'] = (function() {
       // Add the keyboard glyph if using the option keys
       html += '<button type="button" id="attention-check-selection-button" ' +
       'class="control-button" style="margin-right: 20px;">';
-      html += `<b>${getButtonText(trial.submit_button_key)}</b>`;
+      html += `<b>${getButtonLabel(trial.submit_button_key)}</b>`;
       html += '</button>';
       html += `&nbsp;<p id="attention-check-alternate-text">` +
-                `${getButtonText(trial.submit_button_text)}` +
+                `${getButtonLabel(trial.submit_button_text)}` +
               `</p>`;
     } else {
       // Add button if not using option keys
       html += '<button type="button" id="attention-check-selection-button" ' +
       'class="jspsych-btn">';
-      html += getButtonText(trial.submit_button_text);
+      html += getButtonLabel(trial.submit_button_text);
       html += '</button>';
     }
 
@@ -319,7 +307,7 @@ jsPsych.plugins['attention-check'] = (function() {
       document.addEventListener('keyup', buttonHandler);
     }
 
-    // Hide the cursor if entirely keyboard controls
+    // Hide the cursor if entirely keyboard input
     if (optionKeysEnabled === true && buttonKeyEnabled === true) {
       document.body.style.cursor = 'none';
       document.getElementById('attention-check-options')
@@ -365,7 +353,7 @@ jsPsych.plugins['attention-check'] = (function() {
 
         // Start a 5 second countdown before continuing
         continueTimeout = setTimeout(endTrial, 5000);
-      }, trial.timeout);
+      }, trial.main_timeout);
 
       inputTimeout = setTimeout(() => {
         acceptInput = true;
@@ -561,8 +549,10 @@ jsPsych.plugins['attention-check'] = (function() {
       }
 
       // Update the message text beside the button
-      document.getElementById('attention-check-alternate-text')
-          .innerText = continueMessage;
+      if (buttonKeyEnabled === true) {
+        document.getElementById('attention-check-alternate-text')
+            .innerText = continueMessage;
+      }
 
       // Update binding to continue trials
       document.getElementById('attention-check-selection-button')
@@ -593,7 +583,7 @@ jsPsych.plugins['attention-check'] = (function() {
      * @param {string} text the text to add to the button
      * @return {string}
      */
-    function getButtonText(text) {
+    function getButtonLabel(text) {
       if (text === ' ') {
         return 'Space';
       } else if ([...text].length === 1) {
