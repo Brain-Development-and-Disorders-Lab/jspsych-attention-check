@@ -1,8 +1,8 @@
 import 'jspsych';
 import 'jspsych/plugins/jspsych-instructions';
 
-// Our custom plugin (run `yarn build` first)
-import '../dist/main';
+// Our custom plugin
+import '../src/jspsych-attention-check';
 
 // Styling
 import '../src/buttons.css';
