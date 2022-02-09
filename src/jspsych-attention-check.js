@@ -238,27 +238,38 @@ jsPsych.plugins['attention-check'] = (function() {
       for (let i = 0; i < options.length; i++) {
         // Only show button keys when enabled
         if (optionKeysEnabled === true) {
-          html += `<li>` +
-            `<input type="radio" id="R${i}" ` +
-              `name="option" value="R${i}" ` +
-              `style="visibility: hidden;"` +
-            `>` +
-            `</input>`;
-          html += `<button id="btn-R${i}" class="control-button">` +
-            `<b>${getButtonLabel(trial.option_keys[i])}</b>` +
-          `</button>`;
+          html +=
+            `<li>
+              <input
+                type="radio"
+                id="R${i}"
+                name="option"
+                value="R${i}"
+                style="visibility: hidden;"
+              >
+              <button id="btn-R${i}" class="control-button">
+                <b>${getButtonLabel(trial.option_keys[i])}</b>
+              </button>`;
         } else {
-          html += `<li>` +
-            `<input type="radio" id="R${i}" ` +
-              `name="option" value="R${i}" ` +
-            `>` +
-            `</input>`;
+          html +=
+            `<li>
+              <input
+                type="radio"
+                id="R${i}"
+                name="option"
+                value="R${i}"
+              >`;
         }
 
-        html += `&nbsp; ${options[i]}`;
-        html += '</li>';
+        html +=
+            `<label for="R${i}">
+              &nbsp; ${options[i]}
+            </label>
+          </li>`;
       }
-      html += '</ul></form>';
+      html +=
+          `</ul>
+        </form>`;
     }
 
     // Close #attention-check-options-container
