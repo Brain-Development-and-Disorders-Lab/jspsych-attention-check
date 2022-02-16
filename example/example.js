@@ -20,7 +20,7 @@ const timeline = [
   },
   {
     type: 'attention-check',
-    question: 'In this task, ' +
+    prompt: 'In this task, ' +
         'who will be choosing the points you and your partner get?',
     options: [
       'A lottery',

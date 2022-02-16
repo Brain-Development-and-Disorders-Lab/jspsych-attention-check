@@ -4,7 +4,7 @@
  * @description A jsPsych plugin for adding multiple-choice attention check
  * questions to an experiment timeline.
  *
- * This plugin is NOT compatible with jsPsych version 7.0.
+ * This plugin is NOT compatible with jsPsych versions 7.0+.
  *
  * @author Henry Burgess <henry.burgess@wustl.edu>
  *
@@ -16,11 +16,12 @@ jsPsych.plugins['attention-check'] = (function() {
   plugin.info = {
     name: 'attention-check',
     parameters: {
-      question: {
+      // Prompt and possible responses
+      prompt: {
         type: jsPsych.plugins.parameterType.STRING,
-        pretty_name: 'Question prompt text',
+        pretty_name: 'Text prompt',
         default: undefined,
-        description: 'The question to be presented to the participant.',
+        description: 'The prompt to be presented to the participant.',
       },
       options: {
         type: jsPsych.plugins.parameterType.COMPLEX,
@@ -125,9 +126,12 @@ jsPsych.plugins['attention-check'] = (function() {
   };
 
   plugin.trial = function(displayElement, trial) {
-    let html = '<div id="attention-check" class="attention-check">';
+    // Create a container to place all elements
+    const mainContainer = document.createElement('div');
+    mainContainer.id = 'attention-check';
+    mainContainer.className = 'attention-check';
 
-    const question = trial.question;
+    const promptText = trial.prompt;
     const options = trial.options;
     const correctOptionIndex = trial.option_correct;
 
@@ -149,8 +153,9 @@ jsPsych.plugins['attention-check'] = (function() {
     if (optionKeysEnabled === true &&
         buttonKeyEnabled === true &&
         trial.option_keys.includes(trial.submit_button_key) === true) {
-      throw new Error(`button_key '${trial.submit_button_key}'` +
-        ` cannot be in option_keys`);
+      throw new Error(
+          `button_key '${trial.submit_button_key}' cannot be in option_keys`,
+      );
     }
 
     // Set to 'true' when input timeout expires
@@ -173,143 +178,175 @@ jsPsych.plugins['attention-check'] = (function() {
     };
 
     // Inject styling
-    html += '<style>';
-    html +=
-      '.jspsych-attention-check-options { ' +
-        'display: inline-block; padding: 6px 12px; ' +
-        'margin-top: 10px; margin-bottom: 10px;' +
-        'font-size: large; font-weight: 400; ' +
-        'font-family: "Open Sans", "Arial", sans-serif; ' +
-        'cursor: pointer; line-height: 1.4; text-align: left; ' +
-        'white-space: nowrap; vertical-align: middle; ' +
-        'background-image: none; border: 1px solid transparent; ' +
-        'border-radius: 4px; color: #333; ' +
-        'background-color: #fff; border-color: #ccc;' +
-      '}' +
-      '.attention-check-text {' +
-        'font-size: xx-large; font-weight: bold;' +
-      '}' +
-      '.attention-check-button {' +
-        'display: flex;' +
-        'flex-direction: row;' +
-        'justify-content: center;' +
-        'align-items: center;' +
-      '}' +
-      '.jspsych-btn {' +
-        'font-size: large;' +
-      '}' +
-      'option, li {' +
-        'margin-top: 20px;' +
-      '}';
-    html += '</style>';
+    const styling = document.createElement('style');
+    styling.textContent = `
+        .jspsych-attention-check-options {
+          display: inline-block; padding: 6px 12px;
+          margin-top: 10px; margin-bottom: 10px;
+          font-size: large; font-weight: 400;
+          font-family: "Open Sans", "Arial", sans-serif;
+          cursor: pointer; line-height: 1.4; text-align: left;
+          white-space: nowrap; vertical-align: middle;
+          background-image: none; border: 1px solid transparent;
+          border-radius: 4px; color: #333;
+          background-color: #fff; border-color: #ccc;
+        }
+        .attention-check-text {
+          font-size: xx-large; font-weight: bold;
+        }
+        .attention-check-button {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+        }
+        .jspsych-btn {
+          font-size: large;
+        }
+        option, li {
+          margin-top: 20px;
+        }`;
+    mainContainer.appendChild(styling);
 
     // Add the question text
     // Container
-    html += '<div id="attention-check-container">';
+    const attentionCheckContainer = document.createElement('div');
+    attentionCheckContainer.id = 'attention-check-container';
 
-    // Heading
-    html += '<h1 class="attention-check-text">' +
-              question +
-            '</h1>';
+    // Prompt
+    const attentionCheckPrompt = document.createElement('h1');
+    attentionCheckPrompt.className = 'attention-check-text';
+    attentionCheckPrompt.textContent = promptText;
+    attentionCheckContainer.appendChild(attentionCheckPrompt);
 
     // Subtitle
-    html += '<p>Please select your answer from the options below.</p>';
+    const questionPrompt = document.createElement('p');
+    questionPrompt.textContent =
+        'Please select your answer from the options below.';
+    attentionCheckContainer.appendChild(questionPrompt);
 
     // Options
     // These are either in a drop-down or a selection of radio buttons
-    html += '<div id="attention-check-options-container">';
+    const optionsContainer = document.createElement('div');
+    optionsContainer.id = 'attention-check-options-container';
+
     if (trial.options_radio === false) {
       // Add dropdown for options
-      html += '<select required name="attention-check-options" ' +
-                'id="attention-check-options" ' +
-                'class="jspsych-attention-check-options">';
+      const selectField = document.createElement('select');
+      selectField.required = true;
+      selectField.name = 'attention-check-options';
+      selectField.id = 'attention-check-options';
+      selectField.className = 'jspsych-attention-check-options';
+
       for (let i = 0; i < options.length; i++) {
-        html += '<option value="R' + i + '">';
-        html += options[i];
-        html += '</option>';
+        // Create the options within the 'select' element
+        const option = document.createElement('option');
+        option.value = `R${i}`;
+        option.text = options[i];
+        selectField.appendChild(option);
       }
-      html += '</select>';
+
+      optionsContainer.appendChild(selectField);
     } else {
-      // Add radio buttons for options
-      html += '<form required name="attention-check-options" ' +
-                'id="attention-check-options" ' +
-                'class="jspsych-attention-check-options">';
-      html += '<ul style="list-style-type: none; padding-left: 0pt;">';
+      // Create form to nest options
+      const formField = document.createElement('form');
+      formField.name = 'attention-check-options';
+      formField.id = 'attention-check-options';
+      formField.className = 'jspsych-attention-check-options';
+
+      // Create list to hold options
+      const optionList = document.createElement('ul');
+      optionList.style.listStyleType = 'none';
+      optionList.style.paddingLeft = '0pt';
+
       for (let i = 0; i < options.length; i++) {
+        const listOption = document.createElement('li');
         // Only show button keys when enabled
         if (optionKeysEnabled === true) {
-          html +=
-            `<li>
-              <input
-                type="radio"
-                id="R${i}"
-                name="option"
-                value="R${i}"
-                style="visibility: hidden;"
-              >
-              <button id="btn-R${i}" class="control-button">
-                <b>${getButtonLabel(trial.option_keys[i])}</b>
-              </button>`;
+          // Create a hidden radio input field
+          const inputField = document.createElement('input');
+          inputField.type = 'radio';
+          inputField.id = `R${i}`;
+          inputField.name = 'option';
+          inputField.value = `R${i}`;
+          inputField.style.visibility = 'hidden';
+
+          // Create the button graphic in place of the radio input
+          const listOptionButton = document.createElement('button');
+          listOptionButton.id = `btn-R${i}`;
+          listOptionButton.className = 'control-button';
+          listOptionButton.textContent = getButtonLabel(trial.option_keys[i]);
+          inputField.appendChild(listOptionButton);
+
+          // Append the input field to the list
+          listOption.appendChild(inputField);
         } else {
-          html +=
-            `<li>
-              <input
-                type="radio"
-                id="R${i}"
-                name="option"
-                value="R${i}"
-              >`;
+          const inputField = document.createElement('input');
+          inputField.type = 'radio';
+          inputField.id = `R${i}`;
+          inputField.name = 'option';
+          inputField.value = `R${i}`;
+
+          listOption.appendChild(inputField);
         }
 
-        html +=
-            `<label for="R${i}">
-              &nbsp; ${options[i]}
-            </label>
-          </li>`;
+        const optionLabel = document.createElement('label');
+        optionLabel.setAttribute('for', `R${i}`);
+        optionLabel.textContent = options[i];
+        listOption.appendChild(optionLabel);
+
+        optionList.appendChild(listOption);
       }
-      html +=
-          `</ul>
-        </form>`;
+
+      formField.appendChild(optionList);
+      optionsContainer.appendChild(formField);
     }
 
     // Close #attention-check-options-container
-    html += '</div>';
+    attentionCheckContainer.appendChild(optionsContainer);
 
     // Close #attention-check-container
-    html += '</div>';
-
+    mainContainer.appendChild(attentionCheckContainer);
 
     // Submit mechanism
-    html += '<div id="attention-check-button" class="attention-check-button">';
+    const submitContainer = document.createElement('div');
+    submitContainer.id = 'attention-check-button';
+    submitContainer.className = 'attention-check-button';
 
     // Add a button element or a key glyph depending on answer input
     if (buttonKeyEnabled === true) {
       // Add the keyboard glyph if using the option keys
-      html += '<button type="button" id="attention-check-selection-button" ' +
-      'class="control-button" style="margin-right: 20px;">';
-      html += `<b>${getButtonLabel(trial.submit_button_key)}</b>`;
-      html += '</button>';
-      html += `&nbsp;<p id="attention-check-alternate-text">` +
-                `${getButtonLabel(trial.submit_button_text)}` +
-              `</p>`;
+      const submitButton = document.createElement('button');
+      submitButton.type = 'button';
+      submitButton.id = 'attention-check-selection-button';
+      submitButton.className = 'control-button';
+      submitButton.style.marginRight = '20px';
+      submitButton.textContent = getButtonLabel(trial.submit_button_key);
+
+      const submitButtonLabel = document.createElement('p');
+      submitButtonLabel.id = 'attention-check-alternate-text';
+      submitButtonLabel.textContent = getButtonLabel(trial.submit_button_text);
+
+      submitContainer.appendChild(submitButton);
+      submitContainer.appendChild(submitButtonLabel);
     } else {
       // Add button if not using option keys
-      html += '<button type="button" id="attention-check-selection-button" ' +
-      'class="jspsych-btn">';
-      html += getButtonLabel(trial.submit_button_text);
-      html += '</button>';
+      const submitButton = document.createElement('button');
+      submitButton.type = 'button';
+      submitButton.id = 'attention-check-selection-button';
+      submitButton.className = 'jspsych-btn';
+      submitButton.textContent = getButtonLabel(trial.submit_button_text);
+
+      submitContainer.appendChild(submitButton);
     }
 
     // Close #attention-check-button
-    html += '</div>';
-
-    // Close #attention-check
-    html += '</div>';
+    mainContainer.appendChild(submitContainer);
 
     // Update displayed HTML
-    displayElement.innerHTML = html;
+    displayElement.appendChild(mainContainer);
 
-    const startTime = (new Date).getTime();
+    const startTime = performance.now();
     configureTimeout();
 
     // Bind the keys if required
@@ -446,7 +483,7 @@ jsPsych.plugins['attention-check'] = (function() {
     function selectionHandler(event) {
       if (firstClick) {
         // Timing information
-        const endTime = (new Date).getTime();
+        const endTime = performance.now();
         const responseTime = endTime - startTime;
         trialData.rt = responseTime;
 
@@ -489,13 +526,13 @@ jsPsych.plugins['attention-check'] = (function() {
         firstClick = true;
 
         // Append confirmation text
-        const mainContainer = document.getElementById('attention-check-button');
         const confirmationText = document.createElement('span');
         confirmationText.id = 'attention-check-confirmation';
         confirmationText.style.alignSelf = 'center';
         confirmationText.style.marginLeft = '20px';
         confirmationText.innerHTML = '<i>Are you sure?</i>';
-        mainContainer.appendChild(confirmationText);
+        document.getElementById('attention-check-button')
+            .appendChild(confirmationText);
       }
     }
 
