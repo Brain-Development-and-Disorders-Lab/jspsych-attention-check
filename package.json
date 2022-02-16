@@ -15,7 +15,7 @@
   "author": "Henry Burgess <henryjburg@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "watch": "parcel example/index.html",
+    "dev": "parcel example/index.html",
     "build": "parcel build",
     "clean": "rm -rf dist .parcel-cache"
   },

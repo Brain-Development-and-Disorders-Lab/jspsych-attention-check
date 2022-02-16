@@ -22,21 +22,21 @@ yarn add jspsych-attention-check
 
 ## Parameters
 
-### Question and options
+### Prompt and options
 
 Use these parameters to define the attention check prompt and the possible options.
 
-`question`
+`prompt`
 
 - **Required:** yes
 - **Type:** `String`
-- **Description:** The question to be presented to the participant.
+- **Description:** The prompt to be presented to the participant.
 
 `options`
 
 - **Required:** yes
 - **Type:** `Array<String>`
-- **Description:** A list of responses that the participant can select as their answer to the attention-check question.
+- **Description:** A list of responses that the participant can select as their answer to the attention-check prompt.
 
 `options_radio`
 

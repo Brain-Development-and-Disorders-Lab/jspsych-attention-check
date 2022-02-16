@@ -1,6 +1,9 @@
 # Parcel
 .parcel-cache
 
+# MacOS
+.DS_Store
+
 # Logs
 logs
 *.log
