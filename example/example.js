@@ -1,38 +1,35 @@
 import 'jspsych';
-import 'jspsych/plugins/jspsych-instructions';
 
 // Our custom plugin
-import '../src/jspsych-attention-check';
+import '../src';
 
 // Styling
-import '../src/buttons.css';
+import '../src/css/style.css';
 import 'jspsych/css/jspsych.css';
 
 const timeline = [
   {
-    type: 'instructions',
-    pages: [
-      '<h1>Instructions</h1><p>Page 1 😴</p>',
-      '<h1>Instructions</h1><p>Page 2 🤔</p>',
-      '<h1>Instructions</h1><p>Page 3 🧠</p>',
-    ],
-    show_clickable_nav: true,
-  },
-  {
     type: 'attention-check',
     prompt: 'In this task, ' +
         'who will be choosing the points you and your partner get?',
-    options: [
-      'A lottery',
-      'Me',
-      'My partner',
+    responses: [
+      {
+        value: 'Response A',
+        key: 'A',
+        correct: true,
+      },
+      {
+        value: 'Response B',
+        key: 'B',
+        correct: false,
+      },
     ],
-    options_radio: true,
-    option_correct: 1,
-    confirmation: true,
-    feedback_correct: 'Correct! ' +
-        'You will be choosing the points you and your partner get.',
-    feedback_incorrect: 'Incorrect. Please review the instructions.',
+    input: 'radio',
+    confirm: true,
+    feedback: {
+      correct: 'Correct!',
+      incorrect: 'Incorrect!',
+    },
   },
 ];
 
