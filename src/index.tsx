@@ -10,7 +10,6 @@
  *
  */
 
-import { Heading } from "grommet";
 import React from "react";
 import Runner from "./classes/Runner";
 import Layout from "./components/Layout";
@@ -36,7 +35,7 @@ jsPsych.plugins['attention-check'] = (function() {
         description: 'A list of responses that the participant can select as ' +
           'their answer to the attention-check prompt.',
       },
-      input: {
+      style: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Alternate display for options',
         default: 'radio',
@@ -50,33 +49,33 @@ jsPsych.plugins['attention-check'] = (function() {
         description: 'Optionally display a confirmation message before ' +
           'submitting a selected response.',
       },
+      input_timeout: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Timeout before input permitted',
+        default: 0,
+        description: 'Force the participant to wait for a duration ' +
+          'before intput is accepted.',
+      }
     },
   };
 
   plugin.trial = (displayElement: HTMLElement, trial: Trial) => {
     // ------------------------------- Responses -------------------------------
-    // Check that the response format is valid
-    let correctCount = 0;
-    for (const r of trial.responses) {
-      console.debug('Response:', r.value, 'Key:', r.key, 'Correct:', r.correct);
-      if (r.value !== undefined && r.key !== undefined && r.correct !== undefined) {
-        if (r.correct === true) correctCount += 1;
-      } else {
-        console.error(new Error('Invalid \"responses\" value specified. Ensure each response has a \"value\", \"key\", and \"correct\" value defined.'));
-      }
-    }
-
-    // Check the number of correct answers
-    if (correctCount !== 1) {
-      console.error(new Error('Invalid number of correct responses. There should only be one correct response per set of responses.'));
-    }
-
     const runner = new Runner(displayElement, trial);
-    runner.render(
-      <Layout prompt={trial.prompt}>
-        <ResponseField input={trial.input} responses={trial.responses} />
-      </Layout>
-    );
+    if (runner.validate() === true) {
+      runner.render(
+        <Layout prompt={trial.prompt}>
+          <ResponseField
+            style={trial.style}
+            prompt={trial.prompt}
+            responses={trial.responses}
+            inputTimeout={trial.inputTimeout}
+            confirm={trial.confirm}
+            callback={runner.endTrial.bind(runner)}
+          />
+        </Layout>
+      );
+    }
   };
 
   return plugin;

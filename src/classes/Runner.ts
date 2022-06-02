@@ -6,7 +6,7 @@ import * as ReactDOM from 'react-dom/client';
  */
 class Runner {
   private displayElement: HTMLElement;
-  private trial: any;
+  private trial: Trial;
   private root: ReactDOM.Root;
 
   // private root: 
@@ -15,7 +15,7 @@ class Runner {
    * @param {HTMLElement} displayElement target element for jsPsych display
    * @param {any} trial jsPsych trial data
    */
-  constructor(displayElement, trial) {
+  constructor(displayElement: HTMLElement, trial: Trial) {
     // Copy and store the plugin configuration
     this.displayElement = displayElement;
     this.trial = trial;
@@ -27,7 +27,31 @@ class Runner {
    * Validate the configuration passed to the plugin
    * @return {boolean}
    */
-  validate() {
+  validate(): boolean {
+    // All keys must be null or different key values
+    let correctCount = 0;
+    let keyCount = 0;
+    for (const response of this.trial.responses) {
+      // Count correct answers and valid attributes
+      if (response.value !== undefined && response.key !== undefined && response.correct !== undefined) {
+        if (response.correct === true) correctCount += 1;
+      } else {
+        console.error(new Error('Invalid \"responses\" value specified. Ensure each response has a \"value\", \"key\", and \"correct\" value defined.'));
+      }
+      // Count keyboard responses
+      if (response.key !== null && typeof response.key === "string") {
+        keyCount += 1;
+      }
+
+    }
+
+    // Check the number of correct answers
+    if (correctCount !== 1) {
+      console.error(new Error('Invalid number of correct responses. There should only be one correct response per set of responses.'));
+    } else if (keyCount !== this.trial.responses.length) {
+      console.error(new Error(`Invalid key configuration. Ensure all values are "null" or all values are a key.`));
+    }
+
     return true;
   }
 
@@ -37,6 +61,15 @@ class Runner {
    */
   render(content: React.ReactNode) {
     this.root.render(content);
+  }
+
+  /**
+   * End the trial, unmount the React component then submit data to jsPsych
+   * @param {{ selection: string, responseTime: number }} data collected response data
+   */
+  endTrial(data: { selection: string, responseTime: number }) {
+    this.root.unmount();
+    jsPsych.finishTrial(data);
   }
 }
 

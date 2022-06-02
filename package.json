@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "grommet": "^2.23.0",
+    "grommet-icons": "^4.7.0",
     "jspsych": "6.3",
     "polished": "^4.2.2",
     "react-key-icons": "^1.0.0",

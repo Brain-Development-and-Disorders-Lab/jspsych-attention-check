@@ -24,7 +24,7 @@ const timeline = [
         correct: false,
       },
     ],
-    input: 'radio',
+    style: 'radio',
     confirm: true,
     feedback: {
       correct: 'Correct!',

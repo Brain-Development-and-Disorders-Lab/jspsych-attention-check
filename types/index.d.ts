@@ -2,7 +2,8 @@
 declare type Info = {
   prompt: string;
   responses: { value: string, key: string, correct: boolean }[];
-  input: "default" | "radio";
+  style: "default" | "radio";
+  inputTimeout: number;
   confirm: boolean;
 };
 
