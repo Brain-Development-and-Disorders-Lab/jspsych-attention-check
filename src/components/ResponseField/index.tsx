@@ -22,6 +22,7 @@ const ResponseField = (props: ResponseFieldProps) => {
       value: r.value
     };
   }));
+  const [correctResponse] = useState(props.responses.filter(r => r.correct === true)[0].value)
 
   // Continue function
   const continueTrial = () => {
@@ -37,12 +38,7 @@ const ResponseField = (props: ResponseFieldProps) => {
   }
 
   const checkResponse = (finalSelection: string) => {
-    for (const response of props.responses) {
-      if (response.value === finalSelection && response.correct === true) {
-        setSelectionCorrect(true);
-        break;
-      }
-    }
+    setSelectionCorrect(finalSelection === correctResponse);
   }
 
   // End the trial
@@ -55,7 +51,7 @@ const ResponseField = (props: ResponseFieldProps) => {
   }
 
   // Create a keyboard event listener (for radio group only)
-  if (props.style === "radio") {
+  if (props.style === "radio" && props.continue.key !== null) {
     addEventListener('keypress', (event: KeyboardEvent) => {
       const key = event.key;
       if (key === props.continue.key.toLocaleLowerCase() && showFeedback === true && selection !== "") {
@@ -166,7 +162,7 @@ const ResponseField = (props: ResponseFieldProps) => {
               </Box>
               {selectionCorrect === false ?
                 <Box>
-                  <Text size="xlarge"><strong>Correct response:</strong> "{selection}"</Text>
+                  <Text size="xlarge"><strong>Correct response:</strong> "{correctResponse}"</Text>
                 </Box>
               :
                 null
