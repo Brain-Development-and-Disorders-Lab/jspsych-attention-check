@@ -1,7 +1,7 @@
-import { Box, Grommet, Heading } from 'grommet';
-import React from 'react';
+import { Box, Grommet, Heading } from "grommet";
+import React from "react";
 
-import { Theme } from '../../theme';
+import { Theme } from "../../theme";
 
 const Layout = ({ children, prompt }) => {
   return (
@@ -12,6 +12,6 @@ const Layout = ({ children, prompt }) => {
       </Box>
     </Grommet>
   );
-}
+};
 
 export default Layout;

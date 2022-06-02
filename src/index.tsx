@@ -16,53 +16,58 @@ import Layout from "./components/Layout";
 import ResponseField from "./components/ResponseField";
 
 // Instantiate the plugin function
-jsPsych.plugins['attention-check'] = (function() {
-  const plugin = { info: {}, trial: (displayElement, trial) => {}};
+jsPsych.plugins["attention-check"] = (function () {
+  const plugin = { info: {}, trial: (displayElement, trial) => {} };
 
   plugin.info = {
-    name: 'attention-check',
+    name: "attention-check",
     parameters: {
       prompt: {
         type: jsPsych.plugins.parameterType.STRING,
-        pretty_name: 'Text prompt',
+        pretty_name: "Text prompt",
         default: undefined,
-        description: 'The prompt to be presented to the participant.',
+        description: "The prompt to be presented to the participant.",
       },
       responses: {
         type: jsPsych.plugins.parameterType.COMPLEX,
-        pretty_name: 'List of responses to the prompt',
+        pretty_name: "List of responses to the prompt",
         default: undefined,
-        description: 'A list of responses that the participant can select as ' +
-          'their answer to the attention-check prompt.',
+        description:
+          "A list of responses that the participant can select as " +
+          "their answer to the attention-check prompt.",
       },
       continue: {
         type: jsPsych.plugins.parameterType.COMPLEX,
-        pretty_name: 'Set the continuation behaviour',
+        pretty_name: "Set the continuation behaviour",
         default: undefined,
-        description: 'Optionally display a confirmation message before ' +
-          'submitting a selected response.',
+        description:
+          "Optionally display a confirmation message before " +
+          "submitting a selected response.",
       },
       feedback: {
         type: jsPsych.plugins.parameterType.COMPLEX,
-        pretty_name: 'Set the feedback messages',
+        pretty_name: "Set the feedback messages",
         default: undefined,
-        description: 'Describe feedback to the participant in the case of ' +
-          'correct and incorrect responses.',
+        description:
+          "Describe feedback to the participant in the case of " +
+          "correct and incorrect responses.",
       },
       style: {
         type: jsPsych.plugins.parameterType.STRING,
-        pretty_name: 'Alternate display for options',
-        default: 'radio',
-        description: 'Change the options to display as a series of radio ' +
-          'options instead of a drop-down.',
+        pretty_name: "Alternate display for options",
+        default: "radio",
+        description:
+          "Change the options to display as a series of radio " +
+          "options instead of a drop-down.",
       },
       input_timeout: {
         type: jsPsych.plugins.parameterType.INT,
-        pretty_name: 'Timeout before input permitted',
+        pretty_name: "Timeout before input permitted",
         default: 0,
-        description: 'Force the participant to wait for a duration ' +
-          'before intput is accepted.',
-      }
+        description:
+          "Force the participant to wait for a duration " +
+          "before intput is accepted.",
+      },
     },
   };
 

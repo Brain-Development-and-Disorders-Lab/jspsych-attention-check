@@ -15,9 +15,10 @@
   "author": "Henry Burgess <henryjburg@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "parcel example/index.html",
     "build": "parcel build",
-    "clean": "rm -rf dist .parcel-cache"
+    "clean": "rm -rf dist .parcel-cache",
+    "dev": "parcel example/index.html",
+    "lint": "prettier --write ."
   },
   "dependencies": {
     "grommet": "^2.23.0",
@@ -30,9 +31,8 @@
   "devDependencies": {
     "@types/react": "^18.0.10",
     "@types/react-dom": "^18.0.5",
-    "eslint": "^7.32.0",
-    "eslint-config-google": "^0.14.0",
     "parcel": "^2.0.0-rc.0",
+    "prettier": "^2.6.2",
     "react": "^18.1.0",
     "react-dom": "^18.1.0"
   }

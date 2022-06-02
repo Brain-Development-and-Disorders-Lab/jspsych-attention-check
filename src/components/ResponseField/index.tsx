@@ -1,4 +1,12 @@
-import { Box, Button, Heading, Layer, RadioButtonGroup, Select, Text } from "grommet";
+import {
+  Box,
+  Button,
+  Heading,
+  Layer,
+  RadioButtonGroup,
+  Select,
+  Text,
+} from "grommet";
 import { Next } from "grommet-icons";
 import React, { useState } from "react";
 import Key from "react-key-icons";
@@ -14,15 +22,23 @@ const ResponseField = (props: ResponseFieldProps) => {
   const [buttonLabel, setButtonLabel] = useState("Continue");
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [responses] = useState(props.responses.map((r) => {
-    return {
-      disabled: false,
-      id: r.value,
-      label: <Text size="xlarge" margin="small">{r.value}</Text>,
-      value: r.value
-    };
-  }));
-  const [correctResponse] = useState(props.responses.filter(r => r.correct === true)[0].value)
+  const [responses] = useState(
+    props.responses.map((r) => {
+      return {
+        disabled: false,
+        id: r.value,
+        label: (
+          <Text size="xlarge" margin="small">
+            {r.value}
+          </Text>
+        ),
+        value: r.value,
+      };
+    })
+  );
+  const [correctResponse] = useState(
+    props.responses.filter((r) => r.correct === true)[0].value
+  );
 
   // Continue function
   const continueTrial = () => {
@@ -35,35 +51,51 @@ const ResponseField = (props: ResponseFieldProps) => {
 
     checkResponse(selection);
     setShowFeedback(true);
-  }
+  };
 
+  /**
+   * Validate the status of the response
+   * @param {string} finalSelection the selection made by the participant
+   */
   const checkResponse = (finalSelection: string) => {
     setSelectionCorrect(finalSelection === correctResponse);
-  }
+  };
 
-  // End the trial
+  /**
+   * End the trial, calling the callback function
+   */
   const endTrial = () => {
     // Call the callback function
     props.callback({
       selection: selection,
-      responseTime: performance.now() - startTime
+      responseTime: performance.now() - startTime,
     });
-  }
+  };
 
-  // Create a keyboard event listener (for radio group only)
+  // Create a keyboard event listener (for radio group only) if keys have been specified
   if (props.style === "radio" && props.continue.key !== null) {
-    addEventListener('keypress', (event: KeyboardEvent) => {
+    addEventListener("keypress", (event: KeyboardEvent) => {
       const key = event.key;
-      if (key === props.continue.key.toLocaleLowerCase() && showFeedback === true && selection !== "") {
+      if (
+        key === props.continue.key.toLocaleLowerCase() &&
+        showFeedback === true &&
+        selection !== ""
+      ) {
         // Confirmation shown, but trial not ended
         endTrial();
-      } else if (key === props.continue.key.toLocaleLowerCase() && selection !== "") {
+      } else if (
+        key === props.continue.key.toLocaleLowerCase() &&
+        selection !== ""
+      ) {
         // Selection has been made, but confirmation not shown
         continueTrial();
       } else {
         // Select the corresponding option
         for (const response of props.responses) {
-          if (response.key !== null && response.key.toLocaleLowerCase() === key) {
+          if (
+            response.key !== null &&
+            response.key.toLocaleLowerCase() === key
+          ) {
             setSelection(response.value);
           }
         }
@@ -78,17 +110,18 @@ const ResponseField = (props: ResponseFieldProps) => {
     <>
       <Box
         pad="medium"
-        margin={{top: "xsmall", bottom: "large"}}
+        margin={{ top: "xsmall", bottom: "large" }}
         align="center"
         justify="center"
         fill="horizontal"
         border
         round
       >
-        <Heading level={2} margin={{top: "small"}} fill>
-          Please select an option from the {props.style === "default" ? "drop-down" : "list"} below.
+        <Heading level={2} margin={{ top: "small" }} fill>
+          Please select an option from the{" "}
+          {props.style === "default" ? "drop-down" : "list"} below.
         </Heading>
-        {props.style === "default" ?
+        {props.style === "default" ? (
           <Select
             name="responses"
             options={responses}
@@ -96,33 +129,38 @@ const ResponseField = (props: ResponseFieldProps) => {
             value={selection}
             size="medium"
             onChange={({ option }) => {
-              setSelection(option)
+              setSelection(option);
             }}
           />
-        :
+        ) : (
           <RadioButtonGroup
             name="responses"
-            width={{min: "small", max: "2xl"}}
+            width={{ min: "small", max: "2xl" }}
             options={props.responses.map((r) => {
               return {
                 disabled: false,
                 id: r.value,
-                label:
-                  <Box direction="row" justify="center" align="center" gap="small" animation="fadeIn">
-                    <Text size="xlarge">
-                      {r.value}
-                    </Text>
+                label: (
+                  <Box
+                    direction="row"
+                    justify="center"
+                    align="center"
+                    gap="small"
+                    animation="fadeIn"
+                  >
+                    <Text size="xlarge">{r.value}</Text>
 
                     {/* Display the keyboard key if specified */}
                     {r.key !== null ? <Key value={r.key} /> : null}
-                  </Box>,
-                value: r.value
+                  </Box>
+                ),
+                value: r.value,
               };
             })}
             value={selection}
             onChange={(event) => setSelection(event.target.value)}
           />
-        }
+        )}
       </Box>
 
       {/* 'Continue' button */}
@@ -137,20 +175,21 @@ const ResponseField = (props: ResponseFieldProps) => {
           primary
           reverse
         />
-        {props.continue.key !== null ? <Key value={props.continue.key} /> : null}
+        {props.continue.key !== null ? (
+          <Key value={props.continue.key} />
+        ) : null}
       </Box>
 
       {/* Feedback dialog */}
-      {showFeedback &&
+      {showFeedback && (
         <Layer>
           <Box direction="column" pad="medium" gap="medium" align="center" fill>
             <Box>
-              <Heading margin="small" color={selectionCorrect === true ? "green" : "red"}>
-                {selectionCorrect === true ?
-                  "Correct!"
-                :
-                  "Incorrect."
-                }
+              <Heading
+                margin="small"
+                color={selectionCorrect === true ? "green" : "red"}
+              >
+                {selectionCorrect === true ? "Correct!" : "Incorrect."}
               </Heading>
             </Box>
             <Box>
@@ -158,17 +197,24 @@ const ResponseField = (props: ResponseFieldProps) => {
             </Box>
             <Box align="left" gap="small" fill>
               <Box>
-                <Text size="xlarge"><strong>You selected:</strong> "{selection}"</Text>
+                <Text size="xlarge">
+                  <strong>You selected:</strong> "{selection}"
+                </Text>
               </Box>
-              {selectionCorrect === false ?
+              {selectionCorrect === false ? (
                 <Box>
-                  <Text size="xlarge"><strong>Correct response:</strong> "{correctResponse}"</Text>
+                  <Text size="xlarge">
+                    <strong>Correct response:</strong> "{correctResponse}"
+                  </Text>
                 </Box>
-              :
-                null
-              }
+              ) : null}
               <Box>
-                <Text size="xlarge"><strong>Feedback:</strong> {selectionCorrect === true ? props.feedback.correct : props.feedback.incorrect}</Text>
+                <Text size="xlarge">
+                  <strong>Feedback:</strong>{" "}
+                  {selectionCorrect === true
+                    ? props.feedback.correct
+                    : props.feedback.incorrect}
+                </Text>
               </Box>
             </Box>
             <Box direction="row" gap="small">
@@ -182,11 +228,13 @@ const ResponseField = (props: ResponseFieldProps) => {
                 primary
                 reverse
               />
-              {props.continue.key !== null ? <Key value={props.continue.key} /> : null}
+              {props.continue.key !== null ? (
+                <Key value={props.continue.key} />
+              ) : null}
             </Box>
           </Box>
         </Layer>
-      }
+      )}
     </>
   );
 };
