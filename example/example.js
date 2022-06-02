@@ -15,19 +15,19 @@ const timeline = [
     responses: [
       {
         value: 'Response A',
-        key: 'A',
+        key: null,
         correct: true,
       },
       {
         value: 'Response B',
-        key: 'B',
+        key: null,
         correct: false,
       },
     ],
     style: 'radio',
     continue: {
       confirm: true,
-      key: 'C',
+      key: null,
     },
     feedback: {
       correct: 'Correct!',

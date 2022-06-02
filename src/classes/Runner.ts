@@ -48,7 +48,7 @@ class Runner {
     if (correctCount !== 1) {
       console.error(new Error('Invalid number of correct responses. There should only be one correct response per set of responses.'));
       return false;
-    } else if (keyCount !== this.trial.responses.length) {
+    } else if (keyCount !== 0 && keyCount !== this.trial.responses.length) {
       console.error(new Error(`Invalid key configuration. Ensure all values are "null" or all values are a key.`));
       return false;
     }

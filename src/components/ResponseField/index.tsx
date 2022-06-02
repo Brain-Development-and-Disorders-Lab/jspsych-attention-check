@@ -1,19 +1,19 @@
 import { Box, Button, Heading, Layer, RadioButtonGroup, Select, Text } from "grommet";
-import { Next, Revert } from "grommet-icons";
+import { Next } from "grommet-icons";
 import React, { useState } from "react";
 import Key from "react-key-icons";
 
 declare type ResponseFieldProps = {
-  style: "default" | "radio";
-  prompt: string;
-  responses: { value: string, key: string | null, correct: boolean }[];
-  inputTimeout: number;
-  continue: { confirm: boolean, key: string | null };
   callback: (data: any) => void;
-};
+} & Info;
 
 const ResponseField = (props: ResponseFieldProps) => {
-  // Generate the list of valid responses
+  // Component state
+  const [selection, setSelection] = useState("");
+  const [selectionCorrect, setSelectionCorrect] = useState(false);
+  const [buttonLabel, setButtonLabel] = useState("Continue");
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
   const [responses] = useState(props.responses.map((r) => {
     return {
       disabled: false,
@@ -23,17 +23,53 @@ const ResponseField = (props: ResponseFieldProps) => {
     };
   }));
 
-  // State
-  const [selection, setSelection] = useState("");
-  const [showConfirmation, setShowConfirmation] = useState(false);
+  // Continue function
+  const continueTrial = () => {
+    // Show the confirmation message if it enabled and has not been shown
+    if (props.continue.confirm && showConfirmation === false) {
+      setButtonLabel("Confirm?");
+      setShowConfirmation(true);
+      return;
+    }
+
+    checkResponse(selection);
+    setShowFeedback(true);
+  }
+
+  const checkResponse = (finalSelection: string) => {
+    for (const response of props.responses) {
+      if (response.value === finalSelection && response.correct === true) {
+        setSelectionCorrect(true);
+        break;
+      }
+    }
+  }
+
+  // End the trial
+  const endTrial = () => {
+    // Call the callback function
+    props.callback({
+      selection: selection,
+      responseTime: performance.now() - startTime
+    });
+  }
 
   // Create a keyboard event listener (for radio group only)
   if (props.style === "radio") {
     addEventListener('keypress', (event: KeyboardEvent) => {
       const key = event.key;
-      for (const response of props.responses) {
-        if (response.key !== null && response.key.toLocaleLowerCase() === key) {
-          setSelection(response.value);
+      if (key === props.continue.key.toLocaleLowerCase() && showFeedback === true && selection !== "") {
+        // Confirmation shown, but trial not ended
+        endTrial();
+      } else if (key === props.continue.key.toLocaleLowerCase() && selection !== "") {
+        // Selection has been made, but confirmation not shown
+        continueTrial();
+      } else {
+        // Select the corresponding option
+        for (const response of props.responses) {
+          if (response.key !== null && response.key.toLocaleLowerCase() === key) {
+            setSelection(response.value);
+          }
         }
       }
     });
@@ -97,62 +133,60 @@ const ResponseField = (props: ResponseFieldProps) => {
       <Box direction="row" gap="small">
         <Button
           size="large"
-          label="Continue"
+          label={buttonLabel}
           disabled={selection === ""}
-          onClick={() => {
-            if (props.continue.confirm) {
-              setShowConfirmation(true);
-            } else {
-              props.callback({
-                selection: selection,
-                responseTime: performance.now() - startTime
-              });
-            }
-          }}
+          onClick={() => continueTrial()}
           icon={<Next />}
-          color="light-4"
+          color={showConfirmation === false ? "light-4" : "status-warning"}
           primary
           reverse
         />
         {props.continue.key !== null ? <Key value={props.continue.key} /> : null}
       </Box>
 
-      {/* Confirmation dialog */}
-      {showConfirmation &&
+      {/* Feedback dialog */}
+      {showFeedback &&
         <Layer>
           <Box direction="column" pad="medium" gap="medium" align="center" fill>
             <Box>
-              <Heading margin="small">Confirmation</Heading>
+              <Heading margin="small" color={selectionCorrect === true ? "green" : "red"}>
+                {selectionCorrect === true ?
+                  "Correct!"
+                :
+                  "Incorrect."
+                }
+              </Heading>
             </Box>
             <Box>
               <Text size="xlarge">{props.prompt}</Text>
             </Box>
-            <Box>
-              <Text size="xlarge"><strong>You selected:</strong> "{selection}"</Text>
+            <Box align="left" gap="small" fill>
+              <Box>
+                <Text size="xlarge"><strong>You selected:</strong> "{selection}"</Text>
+              </Box>
+              {selectionCorrect === false ?
+                <Box>
+                  <Text size="xlarge"><strong>Correct response:</strong> "{selection}"</Text>
+                </Box>
+              :
+                null
+              }
+              <Box>
+                <Text size="xlarge"><strong>Feedback:</strong> {selectionCorrect === true ? props.feedback.correct : props.feedback.incorrect}</Text>
+              </Box>
             </Box>
             <Box direction="row" gap="small">
               <Button
                 size="large"
-                label="Go Back"
-                disabled={selection === ""}
-                onClick={() => {
-                  setShowConfirmation(false);
-                }}
-                icon={<Revert />}
-                color="light-4"
-              />
-              <Button
-                size="large"
                 label="Continue"
                 disabled={selection === ""}
-                onClick={() => {
-                  setShowConfirmation(false);
-                }}
+                onClick={() => endTrial()}
                 icon={<Next />}
                 color="light-4"
                 primary
                 reverse
               />
+              {props.continue.key !== null ? <Key value={props.continue.key} /> : null}
             </Box>
           </Box>
         </Layer>
