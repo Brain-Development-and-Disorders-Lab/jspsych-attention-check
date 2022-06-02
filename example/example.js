@@ -25,7 +25,10 @@ const timeline = [
       },
     ],
     style: 'radio',
-    confirm: true,
+    continue: {
+      confirm: true,
+      key: 'C',
+    },
     feedback: {
       correct: 'Correct!',
       incorrect: 'Incorrect!',

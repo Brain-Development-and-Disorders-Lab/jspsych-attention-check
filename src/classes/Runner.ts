@@ -37,19 +37,34 @@ class Runner {
         if (response.correct === true) correctCount += 1;
       } else {
         console.error(new Error('Invalid \"responses\" value specified. Ensure each response has a \"value\", \"key\", and \"correct\" value defined.'));
+        return false;
       }
       // Count keyboard responses
       if (response.key !== null && typeof response.key === "string") {
         keyCount += 1;
       }
-
     }
 
-    // Check the number of correct answers
     if (correctCount !== 1) {
       console.error(new Error('Invalid number of correct responses. There should only be one correct response per set of responses.'));
+      return false;
     } else if (keyCount !== this.trial.responses.length) {
       console.error(new Error(`Invalid key configuration. Ensure all values are "null" or all values are a key.`));
+      return false;
+    }
+
+    //  Check the 'confirm' parameter
+    if (this.trial.continue.key === null && keyCount > 0) {
+      console.error(new Error("Cannot not mix-and-match keyboard input for some interactions."));
+      return false;
+    } else if (this.trial.continue.key !== null && keyCount === 0) {
+      console.error(new Error("Cannot not mix-and-match keyboard input for some interactions."));
+      return false;
+    } else if (this.trial.continue.key !== null) {
+      if (this.trial.responses.map(r => r.key).includes(this.trial.continue.key)) {
+        console.error(new Error("The key to confirm the response must not be assigned to selecting a response also!"));
+        return false;
+      }
     }
 
     return true;

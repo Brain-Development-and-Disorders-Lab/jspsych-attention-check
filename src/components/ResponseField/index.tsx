@@ -6,15 +6,15 @@ import Key from "react-key-icons";
 declare type ResponseFieldProps = {
   style: "default" | "radio";
   prompt: string;
-  responses: { value: string, key: string, correct: boolean }[];
+  responses: { value: string, key: string | null, correct: boolean }[];
   inputTimeout: number;
-  confirm: boolean;
+  continue: { confirm: boolean, key: string | null };
   callback: (data: any) => void;
 };
 
 const ResponseField = (props: ResponseFieldProps) => {
   // Generate the list of valid responses
-  const [responses, setResponses] = useState(props.responses.map((r) => {
+  const [responses] = useState(props.responses.map((r) => {
     return {
       disabled: false,
       id: r.value,
@@ -82,7 +82,7 @@ const ResponseField = (props: ResponseFieldProps) => {
                     </Text>
 
                     {/* Display the keyboard key if specified */}
-                    {r.key !== null && <Key value={r.key} />}
+                    {r.key !== null ? <Key value={r.key} /> : null}
                   </Box>,
                 value: r.value
               };
@@ -92,25 +92,32 @@ const ResponseField = (props: ResponseFieldProps) => {
           />
         }
       </Box>
-      <Button
-        size="large"
-        label="Continue"
-        disabled={selection === ""}
-        onClick={() => {
-          if (props.confirm) {
-            setShowConfirmation(true);
-          } else {
-            props.callback({
-              selection: selection,
-              responseTime: performance.now() - startTime
-            });
-          }
-        }}
-        icon={<Next />}
-        color="light-4"
-        primary
-        reverse
-      />
+
+      {/* 'Continue' button */}
+      <Box direction="row" gap="small">
+        <Button
+          size="large"
+          label="Continue"
+          disabled={selection === ""}
+          onClick={() => {
+            if (props.continue.confirm) {
+              setShowConfirmation(true);
+            } else {
+              props.callback({
+                selection: selection,
+                responseTime: performance.now() - startTime
+              });
+            }
+          }}
+          icon={<Next />}
+          color="light-4"
+          primary
+          reverse
+        />
+        {props.continue.key !== null ? <Key value={props.continue.key} /> : null}
+      </Box>
+
+      {/* Confirmation dialog */}
       {showConfirmation &&
         <Layer>
           <Box direction="column" pad="medium" gap="medium" align="center" fill>

@@ -42,10 +42,10 @@ jsPsych.plugins['attention-check'] = (function() {
         description: 'Change the options to display as a series of radio ' +
           'options instead of a drop-down.',
       },
-      confirm: {
-        type: jsPsych.plugins.parameterType.BOOL,
-        pretty_name: 'Enable a confirmation message',
-        default: false,
+      continue: {
+        type: jsPsych.plugins.parameterType.COMPLEX,
+        pretty_name: 'Set the continuation behaviour',
+        default: undefined,
         description: 'Optionally display a confirmation message before ' +
           'submitting a selected response.',
       },
@@ -69,8 +69,8 @@ jsPsych.plugins['attention-check'] = (function() {
             style={trial.style}
             prompt={trial.prompt}
             responses={trial.responses}
+            continue={trial.continue}
             inputTimeout={trial.inputTimeout}
-            confirm={trial.confirm}
             callback={runner.endTrial.bind(runner)}
           />
         </Layout>
