@@ -1,44 +1,50 @@
-import 'jspsych';
-import 'jspsych/plugins/jspsych-instructions';
+import "jspsych";
 
 // Our custom plugin
-import '../src/jspsych-attention-check';
+import "../src";
 
 // Styling
-import '../src/buttons.css';
-import 'jspsych/css/jspsych.css';
+import "../src/css/style.css";
+import "jspsych/css/jspsych.css";
 
 const timeline = [
   {
-    type: 'instructions',
-    pages: [
-      '<h1>Instructions</h1><p>Page 1 😴</p>',
-      '<h1>Instructions</h1><p>Page 2 🤔</p>',
-      '<h1>Instructions</h1><p>Page 3 🧠</p>',
+    type: "attention-check",
+    prompt:
+      "In this task, who will be choosing the points you and your partner get?",
+    responses: [
+      {
+        value: "A lottery",
+        key: null,
+        correct: false,
+      },
+      {
+        value: "Me",
+        key: null,
+        correct: true,
+      },
+      {
+        value: "My partner",
+        key: null,
+        correct: false,
+      },
     ],
-    show_clickable_nav: true,
-  },
-  {
-    type: 'attention-check',
-    prompt: 'In this task, ' +
-        'who will be choosing the points you and your partner get?',
-    options: [
-      'A lottery',
-      'Me',
-      'My partner',
-    ],
-    options_radio: true,
-    option_correct: 1,
-    confirmation: true,
-    feedback_correct: 'Correct! ' +
-        'You will be choosing the points you and your partner get.',
-    feedback_incorrect: 'Incorrect. Please review the instructions.',
+    style: "default",
+    continue: {
+      confirm: true,
+      key: null,
+    },
+    feedback: {
+      correct: "Correct!",
+      incorrect: "Incorrect!",
+    },
+    input_timeout: 2000,
   },
 ];
 
 const nodeLoop = {
   timeline: timeline,
-  loop_function: function(data) {
+  loop_function: function (data) {
     if (jsPsych.data.getLastTrialData().values()[0].correct === false) {
       return true;
     } else {

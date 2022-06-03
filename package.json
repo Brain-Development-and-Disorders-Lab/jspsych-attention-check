@@ -8,23 +8,33 @@
     "psychology",
     "neuropsychology"
   ],
-  "source": "src/jspsych-attention-check.js",
+  "source": "src/index.tsx",
   "main": "dist/main.js",
   "module": "dist/module.js",
   "repository": "https://henry-burgess@github.com/henry-burgess/jspsych-attention-check.git",
   "author": "Henry Burgess <henryjburg@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "parcel example/index.html",
     "build": "parcel build",
-    "clean": "rm -rf dist .parcel-cache"
+    "clean": "rm -rf dist .parcel-cache",
+    "dev": "parcel example/index.html",
+    "lint": "prettier --write ."
   },
   "dependencies": {
-    "jspsych": "6.3"
+    "grommet": "^2.23.0",
+    "grommet-icons": "^4.7.0",
+    "jspsych": "6.3",
+    "polished": "^4.2.2",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-key-icons": "^1.0.0",
+    "styled-components": "^5.3.5",
+    "usehooks-ts": "^2.5.4"
   },
   "devDependencies": {
-    "eslint": "^7.32.0",
-    "eslint-config-google": "^0.14.0",
-    "parcel": "^2.0.0-rc.0"
+    "@types/react": "^18.0.10",
+    "@types/react-dom": "^18.0.5",
+    "parcel": "^2.0.0-rc.0",
+    "prettier": "^2.6.2"
   }
 }

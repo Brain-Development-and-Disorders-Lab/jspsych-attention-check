@@ -42,3 +42,41 @@
   border: 2px solid #67d15e;
   box-shadow: 3px 3px #62c759;
 }
+
+.jspsych-attention-check-options {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: large;
+  font-weight: 400;
+  font-family: "Open Sans", "Arial", sans-serif;
+  cursor: pointer;
+  line-height: 1.4;
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: middle;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc;
+}
+.attention-check-text {
+  font-size: xx-large;
+  font-weight: bold;
+}
+.attention-check-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.jspsych-btn {
+  font-size: large;
+}
+option,
+li {
+  margin-top: 20px;
+}

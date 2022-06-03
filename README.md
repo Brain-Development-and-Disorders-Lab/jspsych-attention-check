@@ -1,158 +1,84 @@
 # jspsych-attention-check
 
-_A jsPsych plugin for adding multiple-choice attention check questions to an experiment timeline._
+_A jsPsych plugin for creating attention-check questions._
 
 _Note: This package is NOT compatible with jsPsych versions >= 7.0._
 
-![npm](https://img.shields.io/npm/v/jspsych-attention-check)
-
-![npm](https://img.shields.io/npm/dt/jspsych-attention-check)
+![npm](https://img.shields.io/npm/v/jspsych-attention-check) ![npm](https://img.shields.io/npm/dt/jspsych-attention-check)
 
 Install this package:
 
-```terminal
-npm install jspsych-attention-check
+```Shell
+$ npm install jspsych-attention-check
 ```
 
 or,
 
-```terminal
-yarn add jspsych-attention-check
+```Shell
+$ yarn add jspsych-attention-check
 ```
+
+## Overview
+
+This plugin allows two styles of attention-check questions to be displayed, while supporting keyboard input schemes for the radio button display style. Additional features include an input timeout, rich feedback capabilities, and the ability to ask the participant for confirmation before submitting their response.
+
+The plugin makes use of React and the [Grommet](https://v2.grommet.io) UI library, an accessibility-first library that provides a number of useful components. Given that jsPsych experiments may not use React, the plugin will clean up after itself to ensure there are no issues mixing a React-based component with a non-React experiment. Keyboard key graphics are displayed using [react-key-icons](https://github.com/henry-burgess/react-key-icons) components.
 
 ## Parameters
 
-### Prompt and options
-
-Use these parameters to define the attention check prompt and the possible options.
-
-`prompt`
-
-- **Required:** yes
-- **Type:** `String`
-- **Description:** The prompt to be presented to the participant.
-
-`options`
-
-- **Required:** yes
-- **Type:** `Array<String>`
-- **Description:** A list of responses that the participant can select as their answer to the attention-check prompt.
-
-`options_radio`
-
-- **Required:** no
-- **Type:** `Boolean`
-- **Default:** `false`
-- **Description:** Change the options to display as a series of radio options instead of a drop-down.
-
-`option_correct`
-
-- **Required:** yes
-- **Type:** `int`
-- **Description:** The index of the correct response in the list of responses. Indexed from 0.
-
-`option_keys`
-
-- **Required:** no
-- **Type:** `List<String>`
-- **Default:** `[]`
-- **Description:** A list of keys that are allocated to selecting each of the options listed. Examples include: `'E'`, `' '` (Space bar), or `'Enter'`.
-
-### Submit button
-
-The 'submit' button is displayed to the participant before they submit their response.
-
-`submit_button_key`
-
-- **Required:** no
-- **Type:** `String`
-- **Default:** `''` (none)
-- **Description:** A key that can be allocated to pressing the button if mouse input is not the only method of interaction. Examples include: `'E'`, `' '` (Space bar), or `'Enter'`.
-
-`submit_button_text`
-
-- **Required:** no
-- **Type:** `String`
-- **Default:** `Submit`
-- **Description:** The text displayed on the submit button.
-
-### Continue button
-
-The 'continue' button is displayed to the participant after they submit their response.
-
-`continue_button_text`
-
-- **Required:** no
-- **Type:** `String`
-- **Default:** `Continue`
-- **Description:** The text displayed on the continue button.
-
-`continue_button_message_correct`
-
-- **Required:** no
-- **Type:** `String`
-- **Default:** `Continue`
-- **Description:** The message displayed next to the continue button after a correct response.
-
-`continue_button_message_incorrect`
-
-- **Required:** no
-- **Type:** `String`
-- **Default:** `Continue`
-- **Description:** The message displayed next to the continue button after an incorrect response.
-
-### Confirmation and feedback
-
-Participants can be given the chance to confirm their answer before submitting. Additionally, the feedback for correct and incorrect answers can be specified.
-
-`confirmation`
-
-- **Required:** yes
-- **Type:** `Boolean`
-- **Description:** Require confirmation of the answer selection before submitting.
-
-`feedback_correct`
-
-- **Required:** yes
-- **Type:** `String`
-- **Description:** Feedback to be given for a correct answer.
-
-`feedback_incorrect`
-
-- **Required:** yes
-- **Type:** `String`
-- **Description:** Feedback to be given for an incorrect answer.
-
-`input_timeout`
-
-- **Required:** no
-- **Type:** `int`
-- **Default:** `300`
-- **Description:** A timeout to allow the participant to read the questions before allowing input.
-
-`main_timeout`
-
-- **Required:** no
-- **Type:** `int`
-- **Default:** `30000`
-- **Description:** A timeout for completing the attention-check question, measured in milliseconds.
+| Name | Type | Required? | Description | Example |
+| ---- | ---- | --------- | ----------- | ------- |
+| `prompt` | `string` | Yes | The prompt to be presented to the participant. | |
+| `responses` | `{value: string, key: string \| null, correct: boolean}[]` | Yes | A list of response objects that the participant can select as their answer to the attention-check prompt. Each response object requires three parameters: `value`: The displayed text of the option; `key`: If the attention-check questions use keyboard input only, specify the corresponding keycode here. If not, this value should always be `null`; and `correct`: Boolean to mark if this response is the correct response or not. There can only be one correct response in each collection of responses. | `[{value: "Response A", key: "1", correct: true}, {value: "Response B", key: "2", correct: false}]` |
+| `continue` | `{confirm: boolean, key: string \| null}` | Yes | Optionally display a confirmation message before submitting a selected response. | `{confirm: true, key: " "}` |
+| `feedback` | `{correct: string, incorrect: string}` | Yes | Specify feedback to be presented depending on a correct or incorrect answer. | `{correct: "Correct feedback.", incorrect: "Incorrect feedback."}` |
+| `style` | `radio` or `default` | No (default: `default`) | Change the display style of the responses. `radio` displays the responses as a set of radio buttons, and is the only display format supporting keyboard input configuration. `default` displays the options as a drop-down list. | |
+| `input_timeout` | `number` | No (default: `0`) | Specify an input timeout that must expire before a participant is permitted to interact with the attention-check question. | `1000` |
 
 ## Example Usage
 
-You can simply add an attention check to your jsPsych plugin like any other timeline element.
+You can add an attention-check to your jsPsych timeline like any other timeline node. The following example displays responses as a radio button group, and uses keyboard input only.
 
 ```javascript
 timeline.push({
-  type: 'attention-check',
-  question: 'Why is 6 afraid of 7?',
-  options: [
-    'Because 7 is even and 6 is not.',
-    'Because 7 is a better number.',
-    'Because 7 8 9!',
+  type: "attention-check",
+  prompt: "Why is 6 afraid of 7?",
+  responses: [
+    {value: "Because 7 is even and 6 is not.", key: "1", correct: false},
+    {value: "Because 7 is a better number.", key: "2", correct: false},
+    {value: "Because 7 8 9!", key: "3", correct: true},
   ],
-  option_correct: 2,
-  button_text: 'Submit Answer',
-  feedback_correct: 'Correct!',
-  feedback_incorrect: 'Incorrect.',
+  style: "radio",
+  continue: {
+    confirm: true,
+    key: " ",
+  },
+  feedback: {
+    correct: "Correct!",
+    incorrect: "Incorrect.",
+  },
+});
+```
+
+The following example displays responses as a drop-down, does not use keyboard input, and does not require confirmation.
+
+```javascript
+timeline.push({
+  type: "attention-check",
+  prompt: "Why is 6 afraid of 7?",
+  responses: [
+    {value: "Because 7 is even and 6 is not.", key: null, correct: false},
+    {value: "Because 7 is a better number.", key: null, correct: false},
+    {value: "Because 7 8 9!", key: null, correct: true},
+  ],
+  style: "default",
+  continue: {
+    confirm: false,
+    key: null,
+  },
+  feedback: {
+    correct: "Correct!",
+    incorrect: "Incorrect.",
+  },
 });
 ```
