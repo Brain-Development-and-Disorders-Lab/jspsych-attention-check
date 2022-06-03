@@ -47,6 +47,7 @@ class Runner {
         );
         return false;
       }
+
       // Count keyboard responses
       if (response.key !== null && typeof response.key === "string") {
         keyCount += 1;
@@ -54,6 +55,7 @@ class Runner {
     }
 
     if (correctCount !== 1) {
+      // Check if only one correct answer has been specified
       console.error(
         new Error(
           "Invalid number of correct responses. There should only be one correct response per set of responses."
@@ -61,6 +63,7 @@ class Runner {
       );
       return false;
     } else if (keyCount !== 0 && keyCount !== this.trial.responses.length) {
+      // Check that enough keys have been specified for the number of responses
       console.error(
         new Error(
           `Invalid key configuration. Ensure all values are "null" or all values are a key.`
@@ -78,6 +81,7 @@ class Runner {
       );
       return false;
     } else if (this.trial.continue.key !== null && keyCount === 0) {
+      // Check that keys are specified for responses and the continue key
       console.error(
         new Error(
           "Cannot not mix-and-match keyboard input for some interactions."
@@ -85,6 +89,7 @@ class Runner {
       );
       return false;
     } else if (this.trial.continue.key !== null) {
+      // Check that the continue key is not assigned already
       if (
         this.trial.responses.map((r) => r.key).includes(this.trial.continue.key)
       ) {
@@ -95,6 +100,11 @@ class Runner {
         );
         return false;
       }
+    }
+
+    if (this.trial.style === "default" && keyCount !== 0) {
+      console.error(new Error(`Do not specify keys for the "default" style.`));
+      return false;
     }
 
     return true;

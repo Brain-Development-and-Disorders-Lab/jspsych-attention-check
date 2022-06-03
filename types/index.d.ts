@@ -5,7 +5,7 @@ declare type Info = {
   feedback: { correct: string; incorrect: string };
   continue: { confirm: boolean; key: string | null };
   style: "default" | "radio";
-  inputTimeout: number;
+  input_timeout: number;
 };
 
 declare type Trial = {

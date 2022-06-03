@@ -12,8 +12,7 @@
 
 import React from "react";
 import Runner from "./classes/Runner";
-import Layout from "./components/Layout";
-import ResponseField from "./components/ResponseField";
+import View from "./components/View";
 
 // Instantiate the plugin function
 jsPsych.plugins["attention-check"] = (function () {
@@ -72,21 +71,21 @@ jsPsych.plugins["attention-check"] = (function () {
   };
 
   plugin.trial = (displayElement: HTMLElement, trial: Trial) => {
-    // ------------------------------- Responses -------------------------------
+    // Instantiate the 'Runner' class for this plugin
     const runner = new Runner(displayElement, trial);
+
+    // If validation of the provided parameters passes, render the screen
     if (runner.validate() === true) {
       runner.render(
-        <Layout prompt={trial.prompt}>
-          <ResponseField
-            style={trial.style}
-            prompt={trial.prompt}
-            responses={trial.responses}
-            feedback={trial.feedback}
-            continue={trial.continue}
-            inputTimeout={trial.inputTimeout}
-            callback={runner.endTrial.bind(runner)}
-          />
-        </Layout>
+        <View
+          style={trial.style}
+          prompt={trial.prompt}
+          responses={trial.responses}
+          feedback={trial.feedback}
+          continue={trial.continue}
+          input_timeout={trial.input_timeout}
+          callback={runner.endTrial.bind(runner)}
+        />
       );
     }
   };

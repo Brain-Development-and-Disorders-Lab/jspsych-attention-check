@@ -1,5 +1,6 @@
 // Theme object
 export const Theme = {
+  // Global colours
   global: {
     colors: {
       brand: {
@@ -17,14 +18,35 @@ export const Theme = {
       },
     },
   },
+
+  // 'Select' input component
   select: {
-    icons: {
-      color: "button",
-    },
     options: {
       text: {
         size: "large",
       },
     },
+  },
+
+  // 'RadioButtonGroup' component
+  radioButtonGroup: {
+    container: {
+      gap: "medium",
+      width: "large",
+    },
+  },
+
+  // 'RadioButton' input component
+  radioButton: {
+    border: {
+      color: "dark-3",
+      width: "5px",
+    },
+    hover: {
+      border: {
+        color: "dark-2",
+      },
+    },
+    size: "30px",
   },
 };
