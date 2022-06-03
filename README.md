@@ -30,7 +30,7 @@ yarn add jspsych-attention-check
 
 ## Example Usage
 
-You can simply add an attention check to your jsPsych plugin like any other timeline element.
+You can simply add an attention check to your jsPsych plugin like any other timeline element. The following example uses keyboard input only.
 
 ```javascript
 timeline.push({
@@ -45,6 +45,29 @@ timeline.push({
   continue: {
     confirm: true,
     key: " ",
+  },
+  feedback: {
+    correct: "Correct!",
+    incorrect: "Incorrect.",
+  },
+});
+```
+
+The following does not use keyboard input and does not require confirmation.
+
+```javascript
+timeline.push({
+  type: "attention-check",
+  prompt: "Why is 6 afraid of 7?",
+  responses: [
+    {value: "Because 7 is even and 6 is not.", key: null, correct: false},
+    {value: "Because 7 is a better number.", key: null, correct: false},
+    {value: "Because 7 8 9!", key: null, correct: true},
+  ],
+  style: "radio",
+  continue: {
+    confirm: false,
+    key: null,
   },
   feedback: {
     correct: "Correct!",
