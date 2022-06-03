@@ -8,7 +8,7 @@
     "psychology",
     "neuropsychology"
   ],
-  "source": "src/jspsych-attention-check.js",
+  "source": "src/index.tsx",
   "main": "dist/main.js",
   "module": "dist/module.js",
   "repository": "https://henry-burgess@github.com/henry-burgess/jspsych-attention-check.git",
@@ -25,6 +25,8 @@
     "grommet-icons": "^4.7.0",
     "jspsych": "6.3",
     "polished": "^4.2.2",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
     "react-key-icons": "^1.0.0",
     "styled-components": "^5.3.5",
     "usehooks-ts": "^2.5.4"
@@ -33,8 +35,6 @@
     "@types/react": "^18.0.10",
     "@types/react-dom": "^18.0.5",
     "parcel": "^2.0.0-rc.0",
-    "prettier": "^2.6.2",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0"
+    "prettier": "^2.6.2"
   }
 }
