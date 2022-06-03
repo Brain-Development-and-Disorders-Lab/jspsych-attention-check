@@ -26,14 +26,14 @@ The plugin makes use of React and the [Grommet](https://v2.grommet.io) UI librar
 
 ## Parameters
 
-| Name | Type | Required? | Description | Example |
-| ---- | ---- | --------- | ----------- | ------- |
-| `prompt` | `string` | Yes | The prompt to be presented to the participant. | |
-| `responses` | `{value: string, key: string \| null, correct: boolean}[]` | Yes | A list of response objects that the participant can select as their answer to the attention-check prompt. Each response object requires three parameters: `value`: The displayed text of the option; `key`: If the attention-check questions use keyboard input only, specify the corresponding keycode here. If not, this value should always be `null`; and `correct`: Boolean to mark if this response is the correct response or not. There can only be one correct response in each collection of responses. | `[{value: "Response A", key: "1", correct: true}, {value: "Response B", key: "2", correct: false}]` |
-| `continue` | `{confirm: boolean, key: string \| null}` | Yes | Optionally display a confirmation message before submitting a selected response. | `{confirm: true, key: " "}` |
-| `feedback` | `{correct: string, incorrect: string}` | Yes | Specify feedback to be presented depending on a correct or incorrect answer. | `{correct: "Correct feedback.", incorrect: "Incorrect feedback."}` |
-| `style` | `radio` or `default` | No (default: `default`) | Change the display style of the responses. `radio` displays the responses as a set of radio buttons, and is the only display format supporting keyboard input configuration. `default` displays the options as a drop-down list. | |
-| `input_timeout` | `number` | No (default: `0`) | Specify an input timeout that must expire before a participant is permitted to interact with the attention-check question. | `1000` |
+| Name            | Type                                                       | Required?               | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Example                                                                                             |
+| --------------- | ---------------------------------------------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `prompt`        | `string`                                                   | Yes                     | The prompt to be presented to the participant.                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |                                                                                                     |
+| `responses`     | `{value: string, key: string \| null, correct: boolean}[]` | Yes                     | A list of response objects that the participant can select as their answer to the attention-check prompt. Each response object requires three parameters: `value`: The displayed text of the option; `key`: If the attention-check questions use keyboard input only, specify the corresponding keycode here. If not, this value should always be `null`; and `correct`: Boolean to mark if this response is the correct response or not. There can only be one correct response in each collection of responses. | `[{value: "Response A", key: "1", correct: true}, {value: "Response B", key: "2", correct: false}]` |
+| `continue`      | `{confirm: boolean, key: string \| null}`                  | Yes                     | Optionally display a confirmation message before submitting a selected response.                                                                                                                                                                                                                                                                                                                                                                                                                                  | `{confirm: true, key: " "}`                                                                         |
+| `feedback`      | `{correct: string, incorrect: string}`                     | Yes                     | Specify feedback to be presented depending on a correct or incorrect answer.                                                                                                                                                                                                                                                                                                                                                                                                                                      | `{correct: "Correct feedback.", incorrect: "Incorrect feedback."}`                                  |
+| `style`         | `radio` or `default`                                       | No (default: `default`) | Change the display style of the responses. `radio` displays the responses as a set of radio buttons, and is the only display format supporting keyboard input configuration. `default` displays the options as a drop-down list.                                                                                                                                                                                                                                                                                  |                                                                                                     |
+| `input_timeout` | `number`                                                   | No (default: `0`)       | Specify an input timeout that must expire before a participant is permitted to interact with the attention-check question.                                                                                                                                                                                                                                                                                                                                                                                        | `1000`                                                                                              |
 
 ## Example Usage
 
@@ -44,9 +44,9 @@ timeline.push({
   type: "attention-check",
   prompt: "Why is 6 afraid of 7?",
   responses: [
-    {value: "Because 7 is even and 6 is not.", key: "1", correct: false},
-    {value: "Because 7 is a better number.", key: "2", correct: false},
-    {value: "Because 7 8 9!", key: "3", correct: true},
+    { value: "Because 7 is even and 6 is not.", key: "1", correct: false },
+    { value: "Because 7 is a better number.", key: "2", correct: false },
+    { value: "Because 7 8 9!", key: "3", correct: true },
   ],
   style: "radio",
   continue: {
@@ -67,9 +67,9 @@ timeline.push({
   type: "attention-check",
   prompt: "Why is 6 afraid of 7?",
   responses: [
-    {value: "Because 7 is even and 6 is not.", key: null, correct: false},
-    {value: "Because 7 is a better number.", key: null, correct: false},
-    {value: "Because 7 8 9!", key: null, correct: true},
+    { value: "Because 7 is even and 6 is not.", key: null, correct: false },
+    { value: "Because 7 is a better number.", key: null, correct: false },
+    { value: "Because 7 8 9!", key: null, correct: true },
   ],
   style: "default",
   continue: {
