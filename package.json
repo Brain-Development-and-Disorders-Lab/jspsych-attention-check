@@ -11,6 +11,9 @@
   "source": "src/index.tsx",
   "main": "dist/main.js",
   "module": "dist/module.js",
+  "files": [
+    "dist"
+  ],
   "repository": "https://henry-burgess@github.com/henry-burgess/jspsych-attention-check.git",
   "author": "Henry Burgess <henryjburg@gmail.com>",
   "license": "MIT",
