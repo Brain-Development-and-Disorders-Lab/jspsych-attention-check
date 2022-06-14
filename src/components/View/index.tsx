@@ -68,8 +68,9 @@ const View = (props: ViewProps) => {
   const endTrial = () => {
     // Call the callback function
     props.callback({
-      selection: selection,
-      responseTime: performance.now() - startTime,
+      attentionSelection: selection,
+      attentionCorrect: selectionCorrect,
+      attentionRT: performance.now() - startTime,
     });
   };
 

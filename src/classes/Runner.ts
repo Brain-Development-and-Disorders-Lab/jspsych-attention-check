@@ -120,9 +120,13 @@ class Runner {
 
   /**
    * End the trial, unmount the React component then submit data to jsPsych
-   * @param {{ selection: string, responseTime: number }} data collected response data
+   * @param {{ attentionSelection: string, attentionCorrect: boolean, attentionRT: number }} data collected response data
    */
-  endTrial(data: { selection: string; responseTime: number }) {
+  endTrial(data: {
+    attentionSelection: string;
+    attentionCorrect: boolean;
+    attentionRT: number;
+  }) {
     this.root.unmount();
     jsPsych.finishTrial(data);
   }
