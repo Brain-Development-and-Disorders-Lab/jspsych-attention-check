@@ -3,7 +3,6 @@ import {
   Button,
   Grommet,
   Heading,
-  Keyboard,
   Layer,
   RadioButtonGroup,
   Select,
@@ -66,47 +65,48 @@ const View = (props: ViewProps) => {
   /**
    * End the trial, calling the callback function
    */
-   const endTrial = () => {
+  const endTrial = () => {
     // Call the callback function
     props.callback({
-      selection: selection,
-      responseTime: performance.now() - startTime,
+      attentionSelection: selection,
+      attentionCorrect: selectionCorrect,
+      attentionRT: performance.now() - startTime,
     });
   };
 
-  const keyboardHandler = (event) => {
-    // Ignore the keypress if input is currently disabled
-    if (inputDisabled) return;
+  // Create a keyboard event listener (for radio group only) if keys have been specified
+  if (props.style === "radio" && props.continue.key !== null) {
+    addEventListener("keypress", (event: KeyboardEvent) => {
+      // Ignore the keypress if input is currently disabled
+      if (inputDisabled) return;
 
-    // Ignore the keypress if keyboard input is not in use
-    if (props.continue.key === null) return;
-
-    // Get key information
-    const key = event.key;
-    if (
-      key === props.continue.key.toLocaleLowerCase() &&
-      showFeedback === true &&
-      selection !== ""
-    ) {
-      // Confirmation shown, but trial not ended
-      endTrial();
-    } else if (
-      key === props.continue.key.toLocaleLowerCase() &&
-      selection !== ""
-    ) {
-      // Selection has been made, but confirmation not shown
-      continueTrial();
-    } else {
-      // Select the corresponding option
-      for (const response of props.responses) {
-        if (
-          response.key !== null &&
-          response.key.toLocaleLowerCase() === key
-        ) {
-          setSelection(response.value);
+      // Get key information
+      const key = event.key;
+      if (
+        key === props.continue.key.toLocaleLowerCase() &&
+        showFeedback === true &&
+        selection !== ""
+      ) {
+        // Confirmation shown, but trial not ended
+        endTrial();
+      } else if (
+        key === props.continue.key.toLocaleLowerCase() &&
+        selection !== ""
+      ) {
+        // Selection has been made, but confirmation not shown
+        continueTrial();
+      } else {
+        // Select the corresponding option
+        for (const response of props.responses) {
+          if (
+            response.key !== null &&
+            response.key.toLocaleLowerCase() === key
+          ) {
+            setSelection(response.value);
+          }
         }
       }
-    }
+    });
   }
 
   // Record start time
@@ -148,38 +148,36 @@ const View = (props: ViewProps) => {
             </Box>
           ) : (
             // 'RadioButtonGroup' component
-            <Keyboard onKeyDown={keyboardHandler} target="document">
-              <RadioButtonGroup
-                name="responses"
-                width={{ min: "small", max: "2xl" }}
-                options={props.responses.map((r) => {
-                  return {
-                    id: r.value,
-                    label: (
-                      <Box
-                        direction="row"
-                        justify="center"
-                        align="center"
-                        gap="small"
-                        animation="fadeIn"
-                      >
-                        <Text size="xlarge">{r.value}</Text>
+            <RadioButtonGroup
+              name="responses"
+              width={{ min: "small", max: "2xl" }}
+              options={props.responses.map((r) => {
+                return {
+                  id: r.value,
+                  label: (
+                    <Box
+                      direction="row"
+                      justify="center"
+                      align="center"
+                      gap="small"
+                      animation="fadeIn"
+                    >
+                      <Text size="xlarge">{r.value}</Text>
 
-                        {/* Display the keyboard key if specified */}
-                        {r.key !== null ? <Key value={r.key} /> : null}
-                      </Box>
-                    ),
-                    value: r.value,
-                  };
-                })}
-                value={selection}
-                onChange={(event) => {
-                  // Update selection only if input is enabled
-                  if (!inputDisabled) setSelection(event.target.value);
-                }}
-                disabled={inputDisabled}
-              />
-            </Keyboard>
+                      {/* Display the keyboard key if specified */}
+                      {r.key !== null ? <Key value={r.key} /> : null}
+                    </Box>
+                  ),
+                  value: r.value,
+                };
+              })}
+              value={selection}
+              onChange={(event) => {
+                // Update selection only if input is enabled
+                if (!inputDisabled) setSelection(event.target.value);
+              }}
+              disabled={inputDisabled}
+            />
           )}
         </Box>
 
