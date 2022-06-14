@@ -35,6 +35,14 @@ The plugin makes use of React and the [Grommet](https://v2.grommet.io) UI librar
 | `style` | `radio` or `default` | No (default: `default`) | Change the display style of the responses. `radio` displays the responses as a set of radio buttons, and is the only display format supporting keyboard input configuration. `default` displays the options as a drop-down list. | |
 | `input_timeout` | `number` | No (default: `0`) | Specify an input timeout that must expire before a participant is permitted to interact with the attention-check question. | `1000` |
 
+## Data
+
+Three data points are collected: `attentionRT`, `attentionSelected`, `attentionCorrect`:
+
+- `attentionRT` (_number_): a float representing the time taken by the participant to select an option once input is permitted. Measured in milliseconds.
+- `attentionSelected` (_string_): a string containing the value of the response selected by the participant.
+- `attentionCorrect` (_boolean_): a boolean representing the correctness of the participant's response.
+
 ## Example Usage
 
 You can add an attention-check to your jsPsych timeline like any other timeline node. The following example displays responses as a radio button group, and uses keyboard input only.
