@@ -213,7 +213,10 @@ const View = (props: ViewProps): ReactElement => {
             reverse
           />
           {props.continue.key !== null ? (
-            <Key value={props.continue.key} disabled={selection === "" || !timeoutExpired} />
+            <Key
+              value={props.continue.key}
+              disabled={selection === "" || !timeoutExpired}
+            />
           ) : null}
         </Box>
 
