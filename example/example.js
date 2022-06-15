@@ -15,24 +15,24 @@ const timeline = [
     responses: [
       {
         value: "A lottery",
-        key: null,
+        key: "D",
         correct: false,
       },
       {
         value: "Me",
-        key: null,
+        key: "F",
         correct: true,
       },
       {
         value: "My partner",
-        key: null,
+        key: "J",
         correct: false,
       },
     ],
-    style: "default",
+    style: "radio",
     continue: {
       confirm: true,
-      key: null,
+      key: "K",
     },
     feedback: {
       correct: "Correct!",

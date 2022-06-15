@@ -1,3 +1,5 @@
+// React and Grommet
+import React, { ReactElement, useState } from "react";
 import {
   Box,
   Button,
@@ -9,16 +11,27 @@ import {
   Text,
 } from "grommet";
 import { Next } from "grommet-icons";
-import React, { useState } from "react";
-import { useTimeout } from "usehooks-ts";
+
+// Custom React hooks
+import { useEventListener, useTimeout } from "usehooks-ts";
+
+// Keyboard key icons
 import Key from "react-key-icons";
+
+// Custom theme
 import { Theme } from "../../theme";
 
+// Component props
 declare type ViewProps = {
   callback: (data: any) => void;
 } & Info;
 
-const View = (props: ViewProps) => {
+/**
+ * Construct and return the 'View' component
+ * @param {ViewProps} props component props
+ * @return {ReactElement}
+ */
+const View = (props: ViewProps): ReactElement => {
   // Participant selection and correctness
   const [selection, setSelection] = useState("");
   const [selectionCorrect, setSelectionCorrect] = useState(false);
@@ -30,19 +43,18 @@ const View = (props: ViewProps) => {
   const [buttonLabel, setButtonLabel] = useState("Continue");
 
   // Enable or disable input depending on timeout conditions
-  const [inputDisabled, setInputDisabled] = useState(true);
+  const [timeoutExpired, setTimeoutExpired] = useState(false);
 
   // Toggle confirmation text and feedback layer visibility
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
 
-  // Set a timeout to block input
-  useTimeout(() => {
-    setInputDisabled(false);
-  }, props.input_timeout);
-
-  // Continue function
-  const continueTrial = () => {
+  /**
+   * Either prompt confirmation or check the response depending on
+   * the 'continue' configuration
+   * @return {void}
+   */
+  const continueTrial = (): void => {
     // Show the confirmation message if it enabled and has not been shown
     if (props.continue.confirm && showConfirmation === false) {
       setButtonLabel("Confirm?");
@@ -74,44 +86,51 @@ const View = (props: ViewProps) => {
     });
   };
 
-  // Create a keyboard event listener (for radio group only) if keys have been specified
-  if (props.style === "radio" && props.continue.key !== null) {
-    addEventListener("keypress", (event: KeyboardEvent) => {
-      // Ignore the keypress if input is currently disabled
-      if (inputDisabled) return;
+  /**
+   * Generic keyboard handler, filters input and progresses trial
+   * as required
+   * @param event the keyboard event to be processed
+   * @return {void}
+   */
+  const keyboardHandler = (event: KeyboardEvent): void => {
+    // Ignore all input if the timeout has not expired
+    if (timeoutExpired === false) return;
 
-      // Get key information
-      const key = event.key;
-      if (
-        key === props.continue.key.toLocaleLowerCase() &&
-        showFeedback === true &&
-        selection !== ""
-      ) {
-        // Confirmation shown, but trial not ended
-        endTrial();
-      } else if (
-        key === props.continue.key.toLocaleLowerCase() &&
-        selection !== ""
-      ) {
-        // Selection has been made, but confirmation not shown
-        continueTrial();
-      } else {
-        // Select the corresponding option
-        for (const response of props.responses) {
-          if (
-            response.key !== null &&
-            response.key.toLocaleLowerCase() === key
-          ) {
-            setSelection(response.value);
-          }
+    // Ignore all input if keyboard input is not enabled
+    if (props.style === "default" || props.continue.key === null) return;
+
+    // Get key information
+    const key = event.key;
+
+    // Normalize key strings for comparison
+    const submitKey = props.continue.key.toLocaleLowerCase();
+
+    if (key === submitKey && showFeedback === true && selection !== "") {
+      // Confirmation shown, but trial not ended
+      endTrial();
+    } else if (key === submitKey && selection !== "") {
+      // Selection has been made, but confirmation not shown
+      continueTrial();
+    } else if (showFeedback === false) {
+      // Select the corresponding option
+      for (const response of props.responses) {
+        if (response.key.toLocaleLowerCase() === key) {
+          setSelection(response.value);
         }
       }
-    });
-  }
+    }
+  };
+
+  // Set a timeout to block input
+  useTimeout(() => setTimeoutExpired(true), props.input_timeout);
+
+  // Setup an event listener for the 'keyup' event
+  useEventListener("keyup", keyboardHandler);
 
   // Record start time
   const startTime = performance.now();
 
+  // Return component
   return (
     <Grommet theme={Theme}>
       <Box direction="column" align="center" gap="small" fill>
@@ -143,7 +162,7 @@ const View = (props: ViewProps) => {
                 value={selection}
                 onChange={({ option }) => setSelection(option)}
                 placeholder={"Select"}
-                disabled={inputDisabled}
+                disabled={!timeoutExpired}
               />
             </Box>
           ) : (
@@ -174,9 +193,9 @@ const View = (props: ViewProps) => {
               value={selection}
               onChange={(event) => {
                 // Update selection only if input is enabled
-                if (!inputDisabled) setSelection(event.target.value);
+                if (timeoutExpired) setSelection(event.target.value);
               }}
-              disabled={inputDisabled}
+              disabled={!timeoutExpired}
             />
           )}
         </Box>
@@ -186,7 +205,7 @@ const View = (props: ViewProps) => {
           <Button
             size="large"
             label={buttonLabel}
-            disabled={selection === "" || inputDisabled}
+            disabled={selection === "" || !timeoutExpired}
             onClick={() => continueTrial()}
             icon={<Next />}
             color={showConfirmation === false ? "light-4" : "status-warning"}
@@ -194,7 +213,7 @@ const View = (props: ViewProps) => {
             reverse
           />
           {props.continue.key !== null ? (
-            <Key value={props.continue.key} />
+            <Key value={props.continue.key} disabled={selection === "" || !timeoutExpired} />
           ) : null}
         </Box>
 
