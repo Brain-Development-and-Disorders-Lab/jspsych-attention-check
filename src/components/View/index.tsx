@@ -133,7 +133,7 @@ const View = (props: ViewProps): ReactElement => {
   // Return component
   return (
     <Grommet theme={Theme}>
-      <Box direction="column" align="center" gap="small" fill>
+      <Box direction="column" align="center" justify="center" gap="small" fill>
         <Heading>{props.prompt}</Heading>
         <Box
           pad="medium"
@@ -195,11 +195,11 @@ const View = (props: ViewProps): ReactElement => {
                       direction="row"
                       justify="center"
                       align="center"
-                      gap="small"
+                      gap="medium"
                       animation="fadeIn"
                     >
                       {/* Display the keyboard key if specified */}
-                      {key !== null ? <Key value={key} /> : null}
+                      {key !== null ? <Key value={key} pressed={selection === option} /> : null}
                       <Text size="xlarge">{option}</Text>
                     </Box>
                   )
@@ -218,13 +218,10 @@ const View = (props: ViewProps): ReactElement => {
                       direction="row"
                       justify="center"
                       align="center"
-                      gap="small"
+                      gap="medium"
                       animation="fadeIn"
                     >
                       <Text size="xlarge">{r.value}</Text>
-
-                      {/* Display the keyboard key if specified */}
-                      {r.key !== null ? <Key value={r.key} /> : null}
                     </Box>
                   ),
                   value: r.value,
@@ -241,7 +238,7 @@ const View = (props: ViewProps): ReactElement => {
         </Box>
 
         {/* 'Continue' button */}
-        <Box direction="row" gap="small">
+        <Box direction="row" gap="medium">
           {props.continue.key !== null ? (
             <Key
               value={props.continue.key}
@@ -312,7 +309,10 @@ const View = (props: ViewProps): ReactElement => {
               </Box>
 
               {/* Continue button */}
-              <Box direction="row" gap="small">
+              <Box direction="row" gap="medium">
+                {props.continue.key !== null ? (
+                  <Key value={props.continue.key} />
+                ) : null}
                 <Button
                   size="large"
                   label="Continue"
@@ -323,9 +323,6 @@ const View = (props: ViewProps): ReactElement => {
                   primary
                   reverse
                 />
-                {props.continue.key !== null ? (
-                  <Key value={props.continue.key} />
-                ) : null}
               </Box>
             </Box>
           </Layer>

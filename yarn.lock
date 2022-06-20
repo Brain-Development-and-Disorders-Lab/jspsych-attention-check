@@ -4443,10 +4443,10 @@ react-is@^16.13.1, react-is@^16.7.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-key-icons@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/react-key-icons/-/react-key-icons-1.0.0.tgz#68b8ea4c4d11a8b455a3e94c3583967303eaa565"
-  integrity sha512-hJ9fxN4P+lbOvfD7a3Z+pt0ASf7KI0kuuBkEdVYgdparojh7ZeyD9Jbj1dD/WpmOA0taS3zjJnDdRKEF3m3OiQ==
+react-key-icons@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-key-icons/-/react-key-icons-1.0.1.tgz#b813c7a578f1cb54a5e95f8571b009233bbcb6c9"
+  integrity sha512-/eGczfWsvZJ5FhBrYIt3zf+dYShLgLZ/Y4gvsFmoDH5AQiRKofjOuQotbnrEwsMwVE7E1oBDKL6pAo+QeIbG2A==
 
 react-refresh@^0.9.0:
   version "0.9.0"
