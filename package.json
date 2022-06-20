@@ -24,7 +24,7 @@
     "lint": "prettier --write ."
   },
   "dependencies": {
-    "grommet": "^2.23.0",
+    "grommet": "^2.24.0",
     "grommet-icons": "^4.7.0",
     "jspsych": "6.3",
     "polished": "^4.2.2",

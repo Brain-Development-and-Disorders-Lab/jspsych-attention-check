@@ -166,7 +166,47 @@ const View = (props: ViewProps): ReactElement => {
               />
             </Box>
           ) : (
-            // 'RadioButtonGroup' component
+            props.continue.key !== null ?
+            // 'RadioButtonGroup' component with radio selectors hidden, keyboard input only
+            <RadioButtonGroup
+              name="responses"
+              width={{ min: "small", max: "2xl" }}
+              options={props.responses.map((r) => {
+                return r.value;
+              })}
+              value={selection}
+              onChange={(event) => {
+                // Update selection only if input is enabled
+                if (timeoutExpired) setSelection(event.target.value);
+              }}
+              disabled={!timeoutExpired}
+            >
+              {(option: string) => {
+                // Find the corresponding key
+                let key = null;
+                for (const response of props.responses) {
+                  if (option === response.value) {
+                    key = response.key;
+                    break;
+                  }
+                }
+                return (
+                    <Box
+                      direction="row"
+                      justify="center"
+                      align="center"
+                      gap="small"
+                      animation="fadeIn"
+                    >
+                      {/* Display the keyboard key if specified */}
+                      {key !== null ? <Key value={key} /> : null}
+                      <Text size="xlarge">{option}</Text>
+                    </Box>
+                  )
+                }}
+            </RadioButtonGroup>
+            :
+            // 'RadioButtonGroup' component with radio selectors visible
             <RadioButtonGroup
               name="responses"
               width={{ min: "small", max: "2xl" }}
@@ -202,6 +242,12 @@ const View = (props: ViewProps): ReactElement => {
 
         {/* 'Continue' button */}
         <Box direction="row" gap="small">
+          {props.continue.key !== null ? (
+            <Key
+              value={props.continue.key}
+              disabled={selection === "" || !timeoutExpired}
+            />
+          ) : null}
           <Button
             size="large"
             label={buttonLabel}
@@ -212,12 +258,6 @@ const View = (props: ViewProps): ReactElement => {
             primary
             reverse
           />
-          {props.continue.key !== null ? (
-            <Key
-              value={props.continue.key}
-              disabled={selection === "" || !timeoutExpired}
-            />
-          ) : null}
         </Box>
 
         {/* Feedback dialog */}
