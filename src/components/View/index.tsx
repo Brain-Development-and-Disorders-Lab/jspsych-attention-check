@@ -11,7 +11,7 @@ import {
 import { Next } from "grommet-icons";
 import React, { useState } from "react";
 import { useTimeout } from "usehooks-ts";
-import Key from "react-key-icons";
+import Key from "../Key";
 import { Theme } from "../../theme";
 
 declare type ViewProps = {
