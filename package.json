@@ -30,14 +30,14 @@
     "polished": "^4.2.2",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
-    "react-key-icons": "^1.0.1",
     "styled-components": "^5.3.5",
     "usehooks-ts": "^2.5.4"
   },
   "devDependencies": {
     "@types/react": "^18.0.10",
     "@types/react-dom": "^18.0.5",
-    "parcel": "^2.0.0-rc.0",
-    "prettier": "^2.6.2"
+    "parcel": "^2.8.3",
+    "prettier": "^2.6.2",
+    "process": "^0.11.10"
   }
 }
