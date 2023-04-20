@@ -12,8 +12,7 @@ import {
 } from "grommet";
 import { Next } from "grommet-icons";
 
-import React, { useState } from "react";
-import { useTimeout } from "usehooks-ts";
+import { useEventListener, useTimeout } from "usehooks-ts";
 import Key from "../Key";
 
 // Custom theme
