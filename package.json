@@ -1,6 +1,6 @@
 {
   "name": "jspsych-attention-check",
-  "version": "2.0.2",
+  "version": "2.0.7",
   "description": "A jsPsych plugin for adding multiple-choice attention check questions to an experiment timeline.",
   "keywords": [
     "neuroscience",
@@ -24,7 +24,7 @@
     "lint": "prettier --write ."
   },
   "dependencies": {
-    "grommet": "^2.23.0",
+    "grommet": "^2.24.0",
     "grommet-icons": "^4.7.0",
     "jspsych": "6.3",
     "polished": "^4.2.2",
