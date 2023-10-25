@@ -30,7 +30,7 @@ yarn add jspsych-attention-check@2.1.1
 
 This plugin allows two styles of attention-check questions to be displayed, while supporting keyboard input schemes for the radio button display style. Additional features include an input timeout, rich feedback capabilities, and the ability to ask the participant for confirmation before submitting their response.
 
-The plugin makes use of React and the [Grommet](https://v2.grommet.io) UI library, an accessibility-first library that provides a number of useful components. Given that jsPsych experiments may not use React, the plugin will clean up after itself to ensure there are no issues mixing a React-based component with a non-React experiment. Keyboard key graphics are displayed using [react-key-icons](https://github.com/henry-burgess/react-key-icons) components.
+The plugin makes use of React and the [Grommet](https://v2.grommet.io) UI library, an accessibility-first library that provides a number of useful components. Given that jsPsych experiments may not use React, the plugin will clean up after itself to ensure there are no issues mixing a React-based component with a non-React experiment.
 
 ## Parameters
 
