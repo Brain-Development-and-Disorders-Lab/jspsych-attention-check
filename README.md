@@ -2,20 +2,28 @@
 
 _A jsPsych plugin for creating attention-check questions._
 
-_Note: This package is NOT compatible with jsPsych versions >= 7.0._
+🚨 As of version 3.0.0, this package is only compatible with jsPsych v7.0+. For use with earlier versions, version 2.1.1 of this package is compatible with jsPsych v6.3.
 
 ![npm](https://img.shields.io/npm/v/jspsych-attention-check) ![npm](https://img.shields.io/npm/dt/jspsych-attention-check)
 
-Install this package:
+Install this package (jsPsych v7.0+):
 
 ```Shell
-$ npm install jspsych-attention-check
+npm install jspsych-attention-check@^3.0.0
 ```
 
-or,
+```Shell
+yarn add jspsych-attention-check@^3.0.0
+```
+
+Install this package (recommended for jsPsych v6.3):
 
 ```Shell
-$ yarn add jspsych-attention-check
+npm install jspsych-attention-check@2.1.1
+```
+
+```Shell
+yarn add jspsych-attention-check@2.1.1
 ```
 
 ## Overview
@@ -45,11 +53,11 @@ Three data points are collected: `attentionRT`, `attentionSelected`, `attentionC
 
 ## Example Usage
 
-You can add an attention-check to your jsPsych timeline like any other timeline node. The following example displays responses as a radio button group, and uses keyboard input only.
+You can add an attention-check to your jsPsych v7.0+ timeline like any other timeline node. The following example displays responses as a radio button group, and uses keyboard input only.
 
 ```javascript
 timeline.push({
-  type: "attention-check",
+  type: jsPsychAttentionCheck,
   prompt: "Why is 6 afraid of 7?",
   responses: [
     { value: "Because 7 is even and 6 is not.", key: "1", correct: false },
@@ -72,7 +80,7 @@ The following example displays responses as a drop-down, does not use keyboard i
 
 ```javascript
 timeline.push({
-  type: "attention-check",
+  type: jsPsychAttentionCheck,
   prompt: "Why is 6 afraid of 7?",
   responses: [
     { value: "Because 7 is even and 6 is not.", key: null, correct: false },
