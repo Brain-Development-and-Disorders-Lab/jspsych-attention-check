@@ -19,6 +19,7 @@
     "require": "./dist/index.cjs"
   },
   "typings": "dist/index.d.ts",
+  "unpkg": "dist/index.browser.min.js",
   "files": [
     "src",
     "dist"
