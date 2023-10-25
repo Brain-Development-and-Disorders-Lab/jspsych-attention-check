@@ -1,15 +1,12 @@
-import "jspsych";
-
-// Our custom plugin
-import "../src";
-
-// Styling
-import "../src/css/style.css";
-import "jspsych/css/jspsych.css";
+const jsPsych = initJsPsych({
+  on_finish: () => {
+    jsPsych.data.displayData();
+  },
+});
 
 const timeline = [
   {
-    type: "attention-check",
+    type: jsPsychAttentionCheck,
     prompt:
       "In this task, who will be choosing the points you and your partner get?",
     responses: [
@@ -42,17 +39,4 @@ const timeline = [
   },
 ];
 
-const nodeLoop = {
-  timeline: timeline,
-  loop_function: function (data) {
-    if (jsPsych.data.getLastTrialData().values()[0].correct === false) {
-      return true;
-    } else {
-      return false;
-    }
-  },
-};
-
-jsPsych.init({
-  timeline: [nodeLoop],
-});
+jsPsych.run(timeline);

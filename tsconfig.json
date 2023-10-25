@@ -1,11 +1,8 @@
 {
+  "extends": "@jspsych/config/tsconfig.contrib.json",
   "compilerOptions": {
     "jsx": "react",
-    "outDir": "built/",
-    "allowJs": true,
-    "target": "es5",
-    "resolveJsonModule": true,
-    "esModuleInterop": true
+    "baseUrl": "."
   },
-  "include": ["src", "types"]
+  "include": ["src"]
 }

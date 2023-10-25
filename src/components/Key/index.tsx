@@ -1,7 +1,5 @@
 import React, { FC, ReactElement } from "react";
-
-// Import styling
-import "../../css/style.css";
+import styled from "styled-components";
 
 // Setup a list of aliases
 const aliases: {[key: string]: string} = {
@@ -37,31 +35,41 @@ const Key: FC<KeyProps> = (props: KeyProps): ReactElement => {
     presentedValue = aliases[presentedValue.toUpperCase()];
   }
 
-  // Check if any of the toggle props are present
-  const styleClasses = ["styled-key"];
-  if (props.showCursor !== undefined && props.showCursor === false) {
-    styleClasses.push("no-cursor");
-  }
-
-  if (props.disabled !== undefined && props.disabled === true) {
-    // Disabled appearance
-    styleClasses.push("styled-key-disabled");
-  }
-
-  if (props.disabled !== true && props.pressed === true) {
-    // Pressed appearance
-    styleClasses.push("styled-key-pressed");
-  }
-
   // Set the height of the button if specified
   const customStyles = {
     height: props.height === undefined ? HEIGHT : Math.max(HEIGHT, props.height),
   }
 
+  const Button = styled.button`
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: x-large;
+    background-color: ${(props) => {
+      if (props.disabled) return "#f3f3f3"; // Disabled
+      if (props.pressed) return "#c2c2c2"; // Pressed, not disabled
+      return "#e7e7e7"; // Not pressed, not disabled
+    }};
+    color: ${(props) => props.disabled ? "#b4b4b4" : "#575757"};
+    width: auto;
+    padding: 16px 24px;
+    border-radius: 16px;
+    border: 2px solid  ${(props) => props.pressed ? "#cbcbcb" : "#d8d8d8"};
+    box-shadow: ${(props) => props.pressed ? "1.5px 1.5px #b8b8b8" : "3px 3px #d3d3d3"};
+
+    &:after {
+      display: block;
+      padding-bottom: 100%;
+    }
+  `;
+
   return (
-    <button className={styleClasses.join(" ")} style={customStyles}>
+    <Button
+      disabled={props.disabled}
+      pressed={props.pressed}
+      style={customStyles}
+    >
       {presentedValue}
-    </button>
+    </Button>
   );
 };
 

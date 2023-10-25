@@ -1,5 +1,5 @@
 // React and Grommet
-import React, { ReactElement, useState } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import {
   Box,
@@ -16,20 +16,76 @@ import { Next } from "grommet-icons";
 import { useEventListener, useTimeout } from "usehooks-ts";
 import Key from "../Key";
 
-// Custom theme
-import { Theme } from "../../theme";
-
-// Component props
+// "View" component props
 declare type ViewProps = {
+  prompt: string;
+  responses: { value: string, key: string | null, correct: boolean }[];
+  style: "default" | "radio";
+  continue: { confirm: boolean, key: string | null };
+  feedback: { correct: string, incorrect: string };
+  input_timeout: number;
   callback: (data: any) => void;
-} & Info;
+};
+
+// Configure a theme for the "View" component
+const theme = {
+  // Global colours
+  global: {
+    colors: {
+      brand: {
+        dark: "#CBF3F0",
+        light: "#2EC4B6",
+      },
+      border: {
+        dark: "#444444",
+        light: "#CCCCCC",
+      },
+    },
+    focus: {
+      border: {
+        color: "#FFFFFF",
+      },
+    },
+  },
+
+  // 'Select' input component
+  select: {
+    options: {
+      text: {
+        size: "large",
+      },
+    },
+  },
+
+  // 'RadioButtonGroup' component
+  radioButtonGroup: {
+    container: {
+      gap: "medium",
+      width: "large",
+    },
+  },
+
+  // 'RadioButton' input component
+  radioButton: {
+    border: {
+      color: "dark-3",
+      width: "5px",
+    },
+    hover: {
+      border: {
+        color: "dark-2",
+      },
+    },
+    size: "30px",
+  },
+};
 
 /**
  * Construct and return the 'View' component
  * @param {ViewProps} props component props
  * @return {ReactElement}
  */
-const View = (props: ViewProps): ReactElement => {
+const View = (props: ViewProps) => {
   // Participant selection and correctness
   const [selection, setSelection] = useState("");
   const [selectionCorrect, setSelectionCorrect] = useState(false);
@@ -134,7 +190,7 @@ const View = (props: ViewProps): ReactElement => {
 
   // Return component
   return (
-    <Grommet theme={Theme}>
+    <Grommet theme={theme}>
       <Box direction="column" align="center" justify="center" gap="small" fill>
         <Heading>{props.prompt}</Heading>
         <Box

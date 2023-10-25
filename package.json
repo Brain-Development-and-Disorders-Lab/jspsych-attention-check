@@ -8,35 +8,46 @@
     "psychology",
     "neuropsychology"
   ],
-  "source": "src/index.tsx",
-  "main": "dist/main.js",
-  "module": "dist/module.js",
+  "type": "module",
+  "source": "src/index.ts",
+  "main": "dist/index.cjs",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
+  "typings": "dist/index.d.ts",
   "files": [
+    "src",
     "dist"
   ],
-  "repository": "https://henry-burgess@github.com/henry-burgess/jspsych-attention-check.git",
-  "author": "Henry Burgess <henryjburg@gmail.com>",
+  "repository": "https://github.com/Brain-Development-and-Disorders-Lab/jspsych-attention-check.git",
+  "author": "Henry Burgess <henry.burgess@wustl.edu>",
   "license": "MIT",
   "scripts": {
-    "build": "parcel build",
-    "clean": "rm -rf dist .parcel-cache",
-    "dev": "parcel example/index.html",
-    "lint": "prettier --write ."
+    "test": "jest",
+    "test:watch": "npm test -- --watch",
+    "tsc": "tsc",
+    "build": "rollup --config",
+    "build:watch": "npm run build -- --watch",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "jspsych": "^7.3.3"
   },
   "dependencies": {
-    "grommet": "^2.24.0",
-    "grommet-icons": "^4.7.0",
-    "jspsych": "6.3",
-    "polished": "^4.2.2",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "styled-components": "^5.3.5",
+    "grommet": "^2.33.2",
+    "grommet-icons": "^4.11.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "styled-components": "^5.1.0",
     "usehooks-ts": "^2.5.4"
   },
   "devDependencies": {
-    "@types/react": "^18.0.10",
-    "@types/react-dom": "^18.0.5",
-    "parcel": "^2.8.3",
+    "@jspsych/config": "^1.3.3",
+    "@jspsych/test-utils": "^1.1.2",
+    "@types/react": "^18.2.31",
+    "@types/react-dom": "^18.2.14",
+    "jspsych": "^7.3.3",
     "prettier": "^2.6.2",
     "process": "^0.11.10"
   }

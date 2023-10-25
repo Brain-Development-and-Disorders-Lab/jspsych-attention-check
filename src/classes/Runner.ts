@@ -1,13 +1,15 @@
-import React from "react";
-import * as ReactDOM from "react-dom/client";
+import { JsPsych, TrialType } from "jspsych";
+
+import { createRoot, Root } from "react-dom/client";
 
 /**
  * Default class to support the plugin.
  */
 class Runner {
   private displayElement: HTMLElement;
-  private trial: Trial;
-  private root: ReactDOM.Root;
+  private trial: TrialType<any>;
+  private jsPsych: JsPsych;
+  private root: Root;
 
   // private root:
   /**
@@ -15,12 +17,13 @@ class Runner {
    * @param {HTMLElement} displayElement target element for jsPsych display
    * @param {any} trial jsPsych trial data
    */
-  constructor(displayElement: HTMLElement, trial: Trial) {
+  constructor(displayElement: HTMLElement, trial: TrialType<any>, jsPsych: JsPsych) {
     // Copy and store the plugin configuration
     this.displayElement = displayElement;
     this.trial = trial;
+    this.jsPsych = jsPsych;
 
-    this.root = ReactDOM.createRoot(this.displayElement);
+    this.root = createRoot(this.displayElement);
   }
 
   /**
@@ -110,12 +113,8 @@ class Runner {
     return true;
   }
 
-  /**
-   * Render method for the plugin
-   * @param {React.ReactNode} content React content to render
-   */
-  render(content: React.ReactNode) {
-    this.root.render(content);
+  getRoot(): Root {
+    return this.root;
   }
 
   /**
@@ -128,7 +127,7 @@ class Runner {
     attentionRT: number;
   }) {
     this.root.unmount();
-    jsPsych.finishTrial(data);
+    this.jsPsych.finishTrial(data);
   }
 }
 
