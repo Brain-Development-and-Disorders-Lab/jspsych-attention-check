@@ -27,6 +27,14 @@ jsPsych.plugins["attention-check"] = (function () {
         default: undefined,
         description: "The prompt to be presented to the participant.",
       },
+      style: {
+        type: jsPsych.plugins.parameterType.STRING,
+        pretty_name: "Alternate display for options",
+        default: "radio",
+        description:
+          "Change the options to display as a series of radio " +
+          "options instead of a drop-down.",
+      },
       responses: {
         type: jsPsych.plugins.parameterType.COMPLEX,
         pretty_name: "List of responses to the prompt",
@@ -35,13 +43,13 @@ jsPsych.plugins["attention-check"] = (function () {
           "A list of responses that the participant can select as " +
           "their answer to the attention-check prompt.",
       },
-      continue: {
-        type: jsPsych.plugins.parameterType.COMPLEX,
-        pretty_name: "Set the continuation behaviour",
-        default: undefined,
+      correct: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: "Index of correct response from the `responses` array",
+        default: 0,
         description:
-          "Optionally display a confirmation message before " +
-          "submitting a selected response.",
+          "The index of the correct response, as the response is located " +
+          "the `responses` array.",
       },
       feedback: {
         type: jsPsych.plugins.parameterType.COMPLEX,
@@ -51,14 +59,6 @@ jsPsych.plugins["attention-check"] = (function () {
           "Describe feedback to the participant in the case of " +
           "correct and incorrect responses.",
       },
-      style: {
-        type: jsPsych.plugins.parameterType.STRING,
-        pretty_name: "Alternate display for options",
-        default: "radio",
-        description:
-          "Change the options to display as a series of radio " +
-          "options instead of a drop-down.",
-      },
       input_timeout: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: "Timeout before input permitted",
@@ -66,6 +66,26 @@ jsPsych.plugins["attention-check"] = (function () {
         description:
           "Force the participant to wait for a duration " +
           "before intput is accepted.",
+      },
+      input_schema: {
+        type: jsPsych.plugins.parameterType.COMPLEX,
+        pretty_name: "Input schema",
+        default: {
+          select: null,
+          next: null,
+          previous: null,
+        },
+        description:
+          "Specify the keyboard inputs used to interact " +
+          "with the attention check questions.",
+      },
+      confirm_continue: {
+        type: jsPsych.plugins.parameterType.BOOL,
+        pretty_name: "Require confirmation before continuing",
+        default: false,
+        description:
+          "Require the user to confirm their response before " +
+          "continuing with the task.",
       },
     },
   };
@@ -78,12 +98,7 @@ jsPsych.plugins["attention-check"] = (function () {
     if (runner.validate() === true) {
       runner.render(
         <View
-          style={trial.style}
-          prompt={trial.prompt}
-          responses={trial.responses}
-          feedback={trial.feedback}
-          continue={trial.continue}
-          input_timeout={trial.input_timeout}
+          { ...trial }
           callback={runner.endTrial.bind(runner)}
         />
       );

@@ -12,33 +12,24 @@ const timeline = [
     type: "attention-check",
     prompt:
       "In this task, who will be choosing the points you and your partner get?",
-    responses: [
-      {
-        value: "A lottery",
-        key: "A",
-        correct: false,
-      },
-      {
-        value: "Me",
-        key: "B",
-        correct: true,
-      },
-      {
-        value: "My partner",
-        key: "C",
-        correct: false,
-      },
-    ],
     style: "radio",
-    continue: {
-      confirm: true,
-      key: " ",
-    },
+    responses: [
+      "A lottery",
+      "Me",
+      "My partner",
+    ],
+    correct: 1,
     feedback: {
       correct: "Correct!",
       incorrect: "Incorrect!",
     },
     input_timeout: 2000,
+    input_schema: {
+      select: "3",
+      next: "2",
+      previous: "1",
+    },
+    confirm_continue: true,
   },
 ];
 
