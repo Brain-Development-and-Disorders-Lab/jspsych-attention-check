@@ -28,82 +28,29 @@ class Runner {
    * @return {boolean}
    */
   validate(): boolean {
-    // All keys must be null or different key values
-    let correctCount = 0;
-    let keyCount = 0;
-    for (const response of this.trial.responses) {
-      // Count correct answers and valid attributes
-      if (
-        response.value !== undefined &&
-        response.key !== undefined &&
-        response.correct !== undefined
-      ) {
-        if (response.correct === true) correctCount += 1;
-      } else {
-        console.error(
-          new Error(
-            'Invalid "responses" value specified. Ensure each response has a "value", "key", and "correct" value defined.'
-          )
-        );
-        return false;
-      }
+    if (this.trial.responses.length === 0) {
+      console.error(new Error('Invalid "responses" value specified. Ensure at least one response is provided.'));
+      return false;
+    }
 
-      // Count keyboard responses
-      if (response.key !== null && typeof response.key === "string") {
+    if (this.trial.correct < 0 || this.trial.correct >= this.trial.responses.length) {
+      console.error(new Error('Invalid "correct" index specified. Ensure value is >= 0 and corresponds to a value in the "responses" array.'));
+      return false;
+    }
+
+    let keyCount = 0;
+    for (const key of Object.keys(this.trial.input_schema)) {
+      if (typeof this.trial.input_schema[key] === "string") {
         keyCount += 1;
       }
     }
 
-    if (correctCount !== 1) {
-      // Check if only one correct answer has been specified
-      console.error(
-        new Error(
-          "Invalid number of correct responses. There should only be one correct response per set of responses."
-        )
-      );
-      return false;
-    } else if (keyCount !== 0 && keyCount !== this.trial.responses.length) {
-      // Check that enough keys have been specified for the number of responses
-      console.error(
-        new Error(
-          `Invalid key configuration. Ensure all values are "null" or all values are a key.`
-        )
-      );
-      return false;
-    }
-
-    //  Check the 'confirm' parameter
-    if (this.trial.continue.key === null && keyCount > 0) {
-      console.error(
-        new Error(
-          "Cannot not mix-and-match keyboard input for some interactions."
-        )
-      );
-      return false;
-    } else if (this.trial.continue.key !== null && keyCount === 0) {
-      // Check that keys are specified for responses and the continue key
-      console.error(
-        new Error(
-          "Cannot not mix-and-match keyboard input for some interactions."
-        )
-      );
-      return false;
-    } else if (this.trial.continue.key !== null) {
-      // Check that the continue key is not assigned already
-      if (
-        this.trial.responses.map((r) => r.key).includes(this.trial.continue.key)
-      ) {
-        console.error(
-          new Error(
-            "The key to confirm the response must not be assigned to selecting a response also!"
-          )
-        );
-        return false;
-      }
+    if (keyCount > 0 && keyCount < 3) {
+      console.warn('Some keys are not assigned correctly in "input_schema".');
     }
 
     if (this.trial.style === "default" && keyCount !== 0) {
-      console.error(new Error(`Do not specify keys for the "default" style.`));
+      console.warn(new Error(`Do not specify keys for the "default" style.`));
       return false;
     }
 
