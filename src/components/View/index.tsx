@@ -76,9 +76,8 @@ const View = (props: ViewProps): ReactElement => {
    * End the trial, calling the callback function
    */
   const endTrial = () => {
-    // Unbind all keyboard handlers and remove component
+    // Unbind all keyboard handlers
     removeEventListener("keyup", keyboardHandler);
-    ReactDOM.unmountComponentAtNode(document);
 
     // Call the callback function
     props.callback({
