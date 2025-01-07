@@ -1,6 +1,5 @@
 // React and Grommet
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import {
   Box,
   Button,
@@ -132,9 +131,8 @@ const View = (props: ViewProps) => {
    * End the trial, calling the callback function
    */
   const endTrial = () => {
-    // Unbind all keyboard handlers and remove component
+    // Unbind all keyboard handlers
     removeEventListener("keyup", keyboardHandler);
-    ReactDOM.unmountComponentAtNode(document);
 
     // Call the callback function
     props.callback({

@@ -113,8 +113,19 @@ class Runner {
     return true;
   }
 
+  /**
+   * Get the `Root` object created by React to render the plugin
+   * @return {Root}
+   */
   getRoot(): Root {
     return this.root;
+  }
+
+  /**
+   * Utility function to unmount the root created for React
+   */
+  unmountRoot(): void {
+    this.root.unmount();
   }
 
   /**
@@ -126,7 +137,7 @@ class Runner {
     attentionCorrect: boolean;
     attentionRT: number;
   }) {
-    this.root.unmount();
+    this.unmountRoot();
     this.jsPsych.finishTrial(data);
   }
 }

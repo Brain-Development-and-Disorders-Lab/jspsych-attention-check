@@ -40,7 +40,7 @@ const Key: FC<KeyProps> = (props: KeyProps): ReactElement => {
     height: props.height === undefined ? HEIGHT : Math.max(HEIGHT, props.height),
   }
 
-  const Button = styled.button`
+  const Button = styled.button<KeyProps>`
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
     font-size: x-large;
@@ -67,9 +67,8 @@ const Key: FC<KeyProps> = (props: KeyProps): ReactElement => {
       disabled={props.disabled}
       pressed={props.pressed}
       style={customStyles}
-    >
-      {presentedValue}
-    </Button>
+      value={presentedValue}
+    />
   );
 };
 
