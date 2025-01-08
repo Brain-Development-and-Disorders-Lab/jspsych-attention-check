@@ -105,7 +105,8 @@ const View = (props: ViewProps): ReactElement => {
 
     const key = event.key.toString();
 
-    if (key === props.input_schema.next || key === props.input_schema.previous) {
+    if ((key === props.input_schema.next || key === props.input_schema.previous) && showFeedback === false) {
+      // Accept `next` and `previous` input until the feedback screen is shown
       if (elementFocused === false) {
         // Elements not yet focused, moving between UI elements
         setSelectedElementIndex(selectedElementIndex === 0 ? 1 : 0);
@@ -125,12 +126,16 @@ const View = (props: ViewProps): ReactElement => {
         setSelection(props.responses[updatedSelectedResponseIndex]);
       }
     } else if (key === props.input_schema.select) {
-      if (selectedElementIndex === 1) {
+      if (selectedElementIndex === 1 && !showFeedback) {
         // Continue button
         if (selection !== "" && timeoutExpired) {
           continueTrial();
         }
+      } else if (showFeedback === true) {
+        // End the trial if presenting the feedback when this button is pressed
+        endTrial();
       } else {
+        // Flip the element focused status
         setElementFocused(!elementFocused);
       }
     }
@@ -215,7 +220,7 @@ const View = (props: ViewProps): ReactElement => {
             gap={"medium"}
             pad={"none"}
             border={{
-              color: useAlternateInput && selectedElementIndex === 1 ? "lightgray" : "transparent",
+              color: useAlternateInput && !showFeedback && selectedElementIndex === 1 ? "lightgray" : "transparent",
               size: "large",
             }}
             style={{ borderRadius: "32px" }}
@@ -288,13 +293,20 @@ const View = (props: ViewProps): ReactElement => {
                 <Box
                   direction={"row"}
                   gap={"medium"}
+                  pad={"none"}
+                  border={{
+                    color: useAlternateInput ? "lightgray" : "transparent",
+                    size: "large",
+                  }}
+                  style={{ borderRadius: "32px" }}
+                  round
                 >
                   <Button
                     label={"Continue"}
                     disabled={selection === ""}
                     onClick={() => endTrial()}
                     icon={<Next />}
-                    color={"light-4"}
+                    color={"brand"}
                     primary
                     reverse
                   />
