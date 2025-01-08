@@ -6,7 +6,7 @@ declare type Info = {
   correct: number; // The correct response index
   feedback: {
     correct: string;
-    incorrect: string
+    incorrect: string;
   };
   input_timeout: number;
   input_schema: {

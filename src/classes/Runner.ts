@@ -29,12 +29,23 @@ class Runner {
    */
   validate(): boolean {
     if (this.trial.responses.length === 0) {
-      console.error(new Error('Invalid "responses" value specified. Ensure at least one response is provided.'));
+      console.error(
+        new Error(
+          'Invalid "responses" value specified. Ensure at least one response is provided.'
+        )
+      );
       return false;
     }
 
-    if (this.trial.correct < 0 || this.trial.correct >= this.trial.responses.length) {
-      console.error(new Error('Invalid "correct" index specified. Ensure value is >= 0 and corresponds to a value in the "responses" array.'));
+    if (
+      this.trial.correct < 0 ||
+      this.trial.correct >= this.trial.responses.length
+    ) {
+      console.error(
+        new Error(
+          'Invalid "correct" index specified. Ensure value is >= 0 and corresponds to a value in the "responses" array.'
+        )
+      );
       return false;
     }
 

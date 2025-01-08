@@ -13,11 +13,7 @@ const timeline = [
     prompt:
       "In this task, who will be choosing the points you and your partner get?",
     style: "radio",
-    responses: [
-      "A lottery",
-      "Me",
-      "My partner",
-    ],
+    responses: ["A lottery", "Me", "My partner"],
     correct: 1,
     feedback: {
       correct: "Correct!",

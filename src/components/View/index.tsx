@@ -75,7 +75,9 @@ const View = (props: ViewProps): ReactElement => {
    * @param {string} finalSelection the selection made by the participant
    */
   const checkResponse = (finalSelection: string) => {
-    setSelectionCorrect(props.responses.indexOf(finalSelection) === props.correct);
+    setSelectionCorrect(
+      props.responses.indexOf(finalSelection) === props.correct
+    );
   };
 
   /**
@@ -101,11 +103,20 @@ const View = (props: ViewProps): ReactElement => {
     if (timeoutExpired === false) return;
 
     // Ignore all input if keyboard input is not enabled
-    if (props.style === "default" || props.input_schema === null || event.repeat) return;
+    if (
+      props.style === "default" ||
+      props.input_schema === null ||
+      event.repeat
+    )
+      return;
 
     const key = event.key.toString();
 
-    if ((key === props.input_schema.next || key === props.input_schema.previous) && showFeedback === false) {
+    if (
+      (key === props.input_schema.next ||
+        key === props.input_schema.previous) &&
+      showFeedback === false
+    ) {
       // Accept `next` and `previous` input until the feedback screen is shown
       if (elementFocused === false) {
         // Elements not yet focused, moving between UI elements
@@ -114,9 +125,13 @@ const View = (props: ViewProps): ReactElement => {
         // Option within radio buttons
         let updatedSelectedResponseIndex = selectedResponseIndex;
         if (selection !== "" && key === props.input_schema.next) {
-          updatedSelectedResponseIndex = selectedResponseIndex + 1 < props.responses.length ? selectedResponseIndex + 1 : props.responses.length - 1;
+          updatedSelectedResponseIndex =
+            selectedResponseIndex + 1 < props.responses.length
+              ? selectedResponseIndex + 1
+              : props.responses.length - 1;
         } else if (selection !== "" && key === props.input_schema.previous) {
-          updatedSelectedResponseIndex = selectedResponseIndex - 1 >= 0 ? selectedResponseIndex - 1 : 0;
+          updatedSelectedResponseIndex =
+            selectedResponseIndex - 1 >= 0 ? selectedResponseIndex - 1 : 0;
         } else {
           updatedSelectedResponseIndex = 0;
         }
@@ -151,8 +166,16 @@ const View = (props: ViewProps): ReactElement => {
   return (
     <Grommet theme={Theme}>
       <Keyboard onKeyDown={keyboardHandler} target={"document"}>
-        <Box direction={"column"} align={"center"} justify={"center"} gap={"small"} fill>
-          <Heading size={"small"} level={"2"}>{props.prompt}</Heading>
+        <Box
+          direction={"column"}
+          align={"center"}
+          justify={"center"}
+          gap={"small"}
+          fill
+        >
+          <Heading size={"small"} level={"2"}>
+            {props.prompt}
+          </Heading>
           <Box
             pad={"medium"}
             margin={{ top: "xsmall", bottom: "large" }}
@@ -160,7 +183,12 @@ const View = (props: ViewProps): ReactElement => {
             justify={"center"}
             fill={"horizontal"}
             border={{
-              color: useAlternateInput && selectedElementIndex === 0 && !elementFocused ? "lightgray" : "transparent",
+              color:
+                useAlternateInput &&
+                selectedElementIndex === 0 &&
+                !elementFocused
+                  ? "lightgray"
+                  : "transparent",
               size: "large",
             }}
             round
@@ -220,7 +248,10 @@ const View = (props: ViewProps): ReactElement => {
             gap={"medium"}
             pad={"none"}
             border={{
-              color: useAlternateInput && !showFeedback && selectedElementIndex === 1 ? "lightgray" : "transparent",
+              color:
+                useAlternateInput && !showFeedback && selectedElementIndex === 1
+                  ? "lightgray"
+                  : "transparent",
               size: "large",
             }}
             style={{ borderRadius: "32px" }}
@@ -273,7 +304,8 @@ const View = (props: ViewProps): ReactElement => {
                   {selectionCorrect === false ? (
                     <Box>
                       <Text size={"large"}>
-                        <strong>Correct response:</strong> "{props.responses[props.correct]}"
+                        <strong>Correct response:</strong> "
+                        {props.responses[props.correct]}"
                       </Text>
                     </Box>
                   ) : null}

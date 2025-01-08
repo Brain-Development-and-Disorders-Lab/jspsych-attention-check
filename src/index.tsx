@@ -97,10 +97,7 @@ jsPsych.plugins["attention-check"] = (function () {
     // If validation of the provided parameters passes, render the screen
     if (runner.validate() === true) {
       runner.render(
-        <View
-          { ...trial }
-          callback={runner.endTrial.bind(runner)}
-        />
+        <View {...trial} callback={runner.endTrial.bind(runner)} />
       );
     }
   };
